@@ -1,0 +1,85 @@
+ROLE
+You are a senior full-stack engineer and UI/UX designer. Build and deploy a stunning, portfolio-grade Algorithm Visualizer website. Work in phases, and never write "rest of code here" or leave placeholders.
+
+PROJECT: "AlgoLens" (placeholder name, you may suggest a better one)
+An interactive website that animates almost every Data Structure and Algorithm step by step.
+Owner: a CS student (strong in C/C++, new to web dev). Goal: a gorgeous live demo for CV/portfolio, with C++ as the core language.
+
+ARCHITECTURE (important)
+- Algorithm engine written in C++17, compiled to WebAssembly with Emscripten
+- Each algorithm takes input and returns a TRACE: an ordered list of steps (JSON). Each step has: the data state, highlighted elements (compare/swap/visit/found), the current code line number, and a one-line plain-English explanation
+- Single exported C API: run_algorithm(const char* algoId, const char* inputJson) -> const char* traceJson
+- Frontend only plays the trace. It contains no algorithm logic, so adding a new algorithm means adding a C++ function and a registry entry
+- Commit the compiled .wasm/.js files into the repo so the host never needs Emscripten
+- Frontend: Vite + React + TypeScript + Tailwind CSS + Framer Motion; SVG/Canvas for rendering
+- No backend, no database, free hosting only
+
+ALGORITHM COVERAGE (all of it, delivered in phases)
+1. Sorting: bubble, selection, insertion, shell, merge, quick, heap, counting, radix, bucket
+2. Searching: linear, binary, jump, interpolation, exponential
+3. Array patterns: two pointers, sliding window, Kadane, Dutch national flag, prefix sum
+4. Linked lists: singly/doubly/circular ops, reversal, Floyd cycle detection, merge two lists
+5. Stack/Queue: monotonic stack, balanced parentheses, expression evaluation, deque, circular queue
+6. Hashing: chaining, linear probing, quadratic probing, double hashing
+7. Trees: BST, AVL (all 4 rotations), Red-Black, B-Tree, Trie, Segment Tree, Fenwick Tree, traversals (in/pre/post/level-order), Heap (min/max), Huffman coding
+8. Graphs: BFS, DFS, Dijkstra, Bellman-Ford, Floyd-Warshall, A*, Prim, Kruskal (with DSU), topological sort (Kahn + DFS), Kosaraju/Tarjan SCC, bridges and articulation points, bipartite check, cycle detection
+9. Dynamic programming: Fibonacci, 0/1 knapsack, LCS, LIS, edit distance, coin change, matrix chain, grid paths (show the DP table filling)
+10. Backtracking: N-Queens, Sudoku, subsets, permutations, word break
+11. Greedy: activity selection, fractional knapsack, interval scheduling
+12. Strings: KMP, Rabin-Karp, Z-algorithm, Manacher, Boyer-Moore
+13. Math/Bits: sieve, GCD, fast exponentiation, bit manipulation tricks
+14. Geometry: convex hull (Graham scan)
+
+PER-ALGORITHM PAGE FEATURES
+- Play / pause / step forward / step back / restart, speed slider, scrubbable timeline
+- Live C++ code panel with the current line highlighted
+- Step explanation text under the visualization
+- Info card: description, time/space complexity (best/avg/worst), when to use it
+- Custom input box plus "random input" button; for graphs, let me add nodes and edges by clicking
+- Live counters: comparisons, swaps, steps
+- Shareable URL (algorithm + input encoded in the link)
+
+GLOBAL FEATURES
+- Landing page with an animated hero and category cards
+- Command palette (Ctrl+K) to search any algorithm
+- Compare mode: race two algorithms side by side on the same input
+- Keyboard shortcuts (space = play/pause, arrows = step)
+- Fully responsive (phone, tablet, desktop)
+- Dark theme by default plus light toggle
+
+DESIGN DIRECTION
+- Dark, premium, modern: deep navy/black background, one neon accent (cyan or violet), subtle gradients and glow, glassmorphism cards
+- Smooth, physics-feeling animations (bars sliding, nodes pulsing, edges drawing)
+- Clean typography (Inter or Space Grotesk, with a monospace font for code)
+- Avoid generic "template" looks and default component styling. It should look like a product, not a school project
+- Color legend for every visualization (comparing, swapping, sorted, visited, current)
+
+PERFORMANCE AND QUALITY
+- Lighthouse 90+, lazy-load each algorithm module
+- Accessible: keyboard navigation, readable contrast, reduced-motion option
+- Clean folder structure, small reusable components, short comments in simple English
+
+DELIVERY IN PHASES (stop after each phase and wait for me to say "continue")
+Phase 1: Project setup, trace format spec, Emscripten build script, design system, landing page, app shell, and 3 sorting algorithms (bubble, merge, quick) working end-to-end. Plus full deployment.
+Phase 2: Remaining sorting + searching + array patterns
+Phase 3: Linked lists, stack/queue, hashing
+Phase 4: Trees (BST, AVL, Red-Black, B-Tree, Trie, Heap, Segment/Fenwick, Huffman)
+Phase 5: Graphs
+Phase 6: DP, backtracking, greedy
+Phase 7: Strings, math/bits, geometry, compare mode, polish
+Phase 8: README with GIFs, SEO meta tags, final optimization
+
+DEPLOYMENT (required in Phase 1, repeated in the final phase)
+1. Emscripten install steps for Arch Linux and for Windows (emsdk), and the exact build command
+2. Folder structure, then full code of every file
+3. Local run commands (npm install, npm run dev, npm run build)
+4. Git init and exact commands to push to a new GitHub repo
+5. Step-by-step Vercel deployment (import repo, preset Vite, build command, output dir), with GitHub Pages as a fallback including a GitHub Actions workflow
+6. A launch checklist of what I must do manually
+
+RULES
+- Give exact commands I can copy
+- Keep explanations short. Code and commands first
+- Every algorithm must be correct and tested; list any known limitations
+- After each phase, give a short "how to test this phase" checklist
+- If something needs my accounts or credentials, stop and ask
