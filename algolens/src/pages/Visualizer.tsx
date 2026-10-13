@@ -7,14 +7,13 @@ import {
   RefreshCw,
   AlertCircle,
   HelpCircle,
-  ChevronDown,
 } from 'lucide-react';
 import { ALGORITHMS, getAlgorithmById } from '@/lib/algorithms-registry';
 import { useWasmEngine } from '@/hooks/use-wasm-engine';
 import type { Trace, Step } from '@/types/trace';
 import { ArrayBars } from '@/components/visualizer/array-bars';
 import { PlaybackControls } from '@/components/visualizer/playback-controls';
-import { CodePanel } from '@/components/visualizer/code-panel';
+import { CodePanel, MobileCodeWindow } from '@/components/visualizer/code-panel';
 import { CountersPanel } from '@/components/visualizer/counters-panel';
 import { CustomInputCard } from '@/components/visualizer/custom-input-card';
 import { InfoCard } from '@/components/visualizer/info-card';
@@ -54,7 +53,6 @@ export default function Visualizer() {
   const [loadingTrace, setLoadingTrace] = useState(false);
   const [traceError, setTraceError] = useState<string | null>(null);
   const [copiedShare, setCopiedShare] = useState(false);
-  const [isCodePanelOpen, setIsCodePanelOpen] = useState(false);
 
   // Re-run algorithm trace when algoId or inputArray changes
   const runTrace = useCallback(
@@ -344,6 +342,14 @@ export default function Visualizer() {
             onSpeedChange={(newSpeed) => setSpeedMs(newSpeed)}
           />
 
+          <div className="lg:hidden">
+            <MobileCodeWindow
+              algorithmId={currentAlgo.id}
+              codeLines={trace?.codeLines || []}
+              activeLineIndex={currentStep.codeLine}
+            />
+          </div>
+
           {/* Counters Metrics */}
           <CountersPanel
             counters={currentStep.counters}
@@ -357,26 +363,6 @@ export default function Visualizer() {
             onApplyInput={handleApplyInput}
           />
 
-          <section className="lg:hidden">
-            <button
-              type="button"
-              onClick={() => setIsCodePanelOpen((open) => !open)}
-              aria-expanded={isCodePanelOpen}
-              className="flex w-full touch-manipulation items-center justify-between rounded-xl border border-white/10 bg-slate-950/80 px-4 py-3 text-sm font-semibold text-slate-100 backdrop-blur-md"
-            >
-              <span>View C++ code</span>
-              <ChevronDown className={`h-5 w-5 transition-transform ${isCodePanelOpen ? 'rotate-180' : ''}`} />
-            </button>
-            {isCodePanelOpen && (
-              <div className="pt-3">
-                <CodePanel
-                  algorithmId={currentAlgo.id}
-                  codeLines={trace?.codeLines || []}
-                  activeLineIndex={currentStep.codeLine}
-                />
-              </div>
-            )}
-          </section>
         </div>
 
         {/* Right Column: Live C++ Code Panel + Info Card (4 cols) */}

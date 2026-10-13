@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { Code2, Copy, Check, Terminal } from 'lucide-react';
 
 interface CodePanelProps {
@@ -13,28 +13,6 @@ export function CodePanel({
   activeLineIndex,
 }: CodePanelProps) {
   const [copied, setCopied] = useState(false);
-  const activeLineRef = useRef<HTMLDivElement | null>(null);
-  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
-
-  // Scroll only the code viewport; never move the document viewport.
-  useEffect(() => {
-    const activeLine = activeLineRef.current;
-    const container = scrollContainerRef.current;
-
-    if (!activeLine || !container || container.clientHeight === 0) return;
-
-    const lineTop = activeLine.offsetTop;
-    const lineBottom = lineTop + activeLine.offsetHeight;
-    const visibleTop = container.scrollTop;
-    const visibleBottom = visibleTop + container.clientHeight;
-
-    if (lineTop < visibleTop || lineBottom > visibleBottom) {
-      container.scrollTo({
-        top: Math.max(0, lineTop - (container.clientHeight - activeLine.offsetHeight) / 2),
-        behavior: 'smooth',
-      });
-    }
-  }, [activeLineIndex]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(codeLines.join('\n'));
@@ -78,14 +56,13 @@ export function CodePanel({
       </div>
 
       {/* Code Lines Display */}
-      <div ref={scrollContainerRef} className="max-h-80 overflow-y-auto overscroll-auto p-3 font-mono text-sm leading-relaxed select-text">
+      <div className="max-h-80 overflow-y-auto p-3 font-mono text-sm leading-relaxed select-text">
         {codeLines.map((line, idx) => {
           const isActive = idx === activeLineIndex;
 
           return (
             <div
               key={idx}
-              ref={isActive ? activeLineRef : null}
               className={`flex items-start rounded-md px-2 py-0.5 transition-colors group ${
                 isActive
                   ? 'bg-cyan-500/20 border-l-4 border-cyan-400 text-cyan-200 font-semibold shadow-inner'
@@ -117,5 +94,31 @@ export function CodePanel({
         })}
       </div>
     </div>
+  );
+}
+
+export function MobileCodeWindow({ algorithmId, codeLines, activeLineIndex }: CodePanelProps) {
+  const safeActiveLine = Math.max(0, Math.min(activeLineIndex, Math.max(codeLines.length - 1, 0)));
+  const start = Math.max(0, Math.min(safeActiveLine - 3, Math.max(codeLines.length - 7, 0)));
+  const visibleLines = codeLines.slice(start, start + 7);
+
+  return (
+    <section className="rounded-2xl border border-white/10 bg-slate-950/90 p-4 shadow-xl backdrop-blur-xl">
+      <div className="mb-3 flex items-center justify-between text-sm font-mono text-slate-300">
+        <span>{algorithmId.replace('-', '_')}.cpp</span>
+        <span className="text-slate-500">line {safeActiveLine + 1}</span>
+      </div>
+      <div className="space-y-1 font-mono text-sm leading-relaxed" aria-label="Current C++ code window">
+        {visibleLines.map((line, index) => {
+          const lineIndex = start + index;
+          return (
+            <div key={lineIndex} className={`flex rounded-md px-2 py-1 ${lineIndex === safeActiveLine ? 'bg-cyan-500/20 text-cyan-100 ring-1 ring-cyan-400/40' : 'text-slate-400'}`}>
+              <span className="w-8 shrink-0 select-none text-right pr-3 text-slate-500">{lineIndex + 1}</span>
+              <code className="min-w-0 break-all whitespace-pre-wrap">{line}</code>
+            </div>
+          );
+        })}
+      </div>
+    </section>
   );
 }
