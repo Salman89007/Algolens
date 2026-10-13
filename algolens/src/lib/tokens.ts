@@ -1,115 +1,16 @@
-/**
- * AlgoLens Design System Tokens
- * Linear / Vercel / Raycast-inspired developer aesthetics.
- */
-
 export const tokens = {
   colors: {
-    // Canvas & Surfaces
-    background: '#09090b', // Near-black zinc-950
-    surface: '#111114', // Subtle matte card surface
-    surfaceElevated: '#18181b', // Modal, dropdown, tooltip surface
-    surfaceHover: '#1f1f23',
-
-    // Borders & Hairlines
-    border: 'rgba(255, 255, 255, 0.08)',
-    borderHover: 'rgba(255, 255, 255, 0.16)',
-    borderActive: 'rgba(139, 92, 246, 0.4)',
-
-    // Primary Brand Accent (Electric Violet)
-    accent: {
-      DEFAULT: '#8b5cf6', // Electric Violet (violet-500)
-      hover: '#7c3aed', // violet-600
-      active: '#6d28d9', // violet-700
-      muted: 'rgba(139, 92, 246, 0.12)',
-      border: 'rgba(139, 92, 246, 0.28)',
-      glow: 'rgba(139, 92, 246, 0.22)',
-      light: '#a78bfa', // violet-400
-    },
-
-    // Algorithm State Colors (Restrained, High-Contrast)
+    background: '#f7f7f5', surface: 'rgba(255,255,255,.72)', surfaceElevated: 'rgba(255,255,255,.9)', surfaceHover: 'rgba(255,255,255,.98)', border: 'rgba(0,0,0,.1)', borderHover: 'rgba(0,0,0,.22)', borderActive: 'rgba(0,0,0,.5)',
+    accent: { DEFAULT: '#111111', hover: '#303030', active: '#000000', muted: 'rgba(0,0,0,.06)', border: 'rgba(0,0,0,.14)', glow: 'rgba(0,0,0,.12)', light: '#525252' },
+    signal: { solid: '#e10600', bg: 'rgba(225,6,0,.1)', border: 'rgba(225,6,0,.35)', text: '#c00000' },
     status: {
-      compare: {
-        solid: '#f59e0b', // Amber
-        bg: 'rgba(245, 158, 11, 0.14)',
-        border: 'rgba(245, 158, 11, 0.35)',
-        text: '#fbbf24',
-      },
-      swap: {
-        solid: '#f43f5e', // Rose
-        bg: 'rgba(244, 63, 94, 0.14)',
-        border: 'rgba(244, 63, 94, 0.35)',
-        text: '#fda4af',
-      },
-      sorted: {
-        solid: '#10b981', // Emerald
-        bg: 'rgba(16, 185, 129, 0.14)',
-        border: 'rgba(16, 185, 129, 0.35)',
-        text: '#34d399',
-      },
-      current: {
-        solid: '#0ea5e9', // Sky
-        bg: 'rgba(14, 165, 233, 0.14)',
-        border: 'rgba(14, 165, 233, 0.35)',
-        text: '#38bdf8',
-      },
-      pivot: {
-        solid: '#8b5cf6', // Violet
-        bg: 'rgba(139, 92, 246, 0.18)',
-        border: 'rgba(139, 92, 246, 0.45)',
-        text: '#c4b5fd',
-      },
-      defaultBar: {
-        solid: '#3f3f46', // Neutral bar
-        bg: 'rgba(63, 63, 70, 0.3)',
-        border: 'rgba(161, 161, 170, 0.25)',
-        text: '#d4d4d8',
-      },
+      compare: { solid: '#e10600', bg: 'rgba(225,6,0,.1)', border: 'rgba(225,6,0,.35)', text: '#c00000' }, swap: { solid: '#e10600', bg: 'rgba(225,6,0,.1)', border: 'rgba(225,6,0,.35)', text: '#c00000' }, sorted: { solid: '#161616', bg: 'rgba(0,0,0,.08)', border: 'rgba(0,0,0,.25)', text: '#161616' }, current: { solid: '#4b4b4b', bg: 'rgba(0,0,0,.08)', border: 'rgba(0,0,0,.25)', text: '#303030' }, pivot: { solid: '#777777', bg: 'rgba(0,0,0,.06)', border: 'rgba(0,0,0,.2)', text: '#454545' }, defaultBar: { solid: '#b8b8b8', bg: 'rgba(0,0,0,.05)', border: 'rgba(0,0,0,.12)', text: '#161616' },
     },
-
-    // Typography
-    text: {
-      primary: '#fafafa', // zinc-50
-      secondary: '#a1a1aa', // zinc-400
-      muted: '#71717a', // zinc-500
-      faint: '#52525b', // zinc-600
-    },
+    text: { primary: '#111111', secondary: '#5c5c5c', muted: '#777777', faint: '#a1a1a1' },
   },
-
-  fonts: {
-    heading: '"Space Grotesk", system-ui, -apple-system, sans-serif',
-    body: '"Inter", system-ui, -apple-system, sans-serif',
-    mono: '"JetBrains Mono", ui-monospace, SFMono-Regular, monospace',
-  },
-
-  radii: {
-    sm: '6px',
-    md: '8px',
-    lg: '12px',
-    xl: '16px',
-    full: '9999px',
-  },
-
-  shadows: {
-    subtle: '0 1px 2px 0 rgba(0, 0, 0, 0.4)',
-    card: '0 4px 16px -2px rgba(0, 0, 0, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.3)',
-    violetGlow: '0 0 24px -4px rgba(139, 92, 246, 0.25)',
-    innerHairline: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.08)',
-  },
-
-  motion: {
-    // Springs & Transitions (All durations <= 250ms)
-    durationFast: '120ms',
-    durationNormal: '180ms',
-    durationSlow: '240ms',
-    springEasing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-    springTransition: {
-      type: 'spring',
-      stiffness: 420,
-      damping: 32,
-      mass: 0.8,
-    },
-  },
+  fonts: { heading: '"Inter", system-ui, sans-serif', body: '"Inter", system-ui, sans-serif', mono: '"JetBrains Mono", ui-monospace, monospace', display: '"Doto", ui-monospace, monospace' },
+  radii: { sm: '10px', md: '14px', lg: '20px', xl: '28px', full: '9999px' },
+  shadows: { subtle: '0 1px 2px rgba(0,0,0,.04)', card: '0 16px 45px rgba(0,0,0,.08), inset 0 1px rgba(255,255,255,.9)', violetGlow: '0 12px 36px rgba(0,0,0,.12)', innerHairline: 'inset 0 1px rgba(255,255,255,.92)' },
+  motion: { durationFast: '120ms', durationNormal: '180ms', durationSlow: '240ms', springEasing: 'cubic-bezier(.16,1,.3,1)', springTransition: { type: 'spring', stiffness: 420, damping: 32, mass: .8 } },
 } as const;
-
 export type DesignTokens = typeof tokens;

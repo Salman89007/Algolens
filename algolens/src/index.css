@@ -67,6 +67,20 @@
   }
 }
 
+@supports (backdrop-filter: blur(12px)) {
+  .glass { backdrop-filter: blur(18px) saturate(1.1); }
+}
+
+.mono-theme {
+  --page-bg: #f7f7f5;
+  --page-surface: rgba(255,255,255,.72);
+  --page-text: #111;
+  --muted-text: #5c5c5c;
+  --hairline: rgba(0,0,0,.1);
+  --accent-color: #111;
+  --accent-hover: #303030;
+}
+
 @layer base {
   * {
     @apply border-border;

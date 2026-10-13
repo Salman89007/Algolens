@@ -2,6 +2,7 @@ import { useState, useEffect, type ReactNode } from 'react';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { CommandPalette } from '@/components/command-palette';
+import { SmoothScroll } from '@/components/smooth-scroll';
 import { tokens } from '@/lib/tokens';
 
 interface AppShellProps { children: ReactNode }
@@ -26,11 +27,11 @@ export function AppShell({ children }: AppShellProps) {
     return () => { delete (window as any).__openCommandPalette; };
   }, []);
   return (
-    <div className="app-shell">
+    <SmoothScroll><div className="app-shell mono-theme">
       <Navbar onOpenCommandPalette={() => setCommandPaletteOpen(true)} />
       <main className="app-main">{children}</main>
       <Footer />
       <CommandPalette isOpen={commandPaletteOpen} onClose={() => setCommandPaletteOpen(false)} />
-    </div>
+    </div></SmoothScroll>
   );
 }

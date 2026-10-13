@@ -1,4 +1,15 @@
 #root { min-height: 100vh; }
+.mono-theme { background: #f7f7f5; color: #111; }
+.mono-theme .site-header, .mono-theme .site-footer { background: rgba(255,255,255,.74); border-color: rgba(0,0,0,.1); backdrop-filter: blur(18px); }
+.mono-theme .site-header *, .mono-theme .site-footer *, .mono-theme .landing-page { border-color: rgba(0,0,0,.1); }
+.mono-theme .palette-trigger, .mono-theme .primary-action, .mono-theme .github-link, .mono-theme .mobile-menu-trigger { background: #111; color: #fff; border-color: #111; }
+.mono-theme .palette-trigger kbd { background: rgba(255,255,255,.12); color: #fff; border-color: rgba(255,255,255,.25); }
+.mono-theme .preview-card, .mono-theme .algorithm-card, .mono-theme .category-card, .mono-theme .palette-dialog { background: rgba(255,255,255,.72); color: #111; border-color: rgba(0,0,0,.1); box-shadow: 0 16px 45px rgba(0,0,0,.08), inset 0 1px rgba(255,255,255,.9); backdrop-filter: blur(18px); }
+.mono-theme .hero-copy h1, .mono-theme .section-heading h2, .mono-theme .algorithm-card h3, .mono-theme .category-info strong, .mono-theme .preview-file { color: #111; }
+.mono-theme .hero-copy h1 span, .mono-theme .card-link, .mono-theme .section-kicker, .mono-theme .brand > span:last-child > span { color: #111; }
+.mono-theme .preview-chart { background: rgba(0,0,0,.035); border-color: rgba(0,0,0,.08); }
+.mono-theme .preview-bar { background-color: #111 !important; box-shadow: none !important; }
+.mono-theme .site-header kbd, .mono-theme .hero-actions kbd, .mono-theme .landing-bottom-note kbd { background: #fff; color: #111; border-color: rgba(0,0,0,.12); }
 .app-shell { min-height: 100vh; display: flex; flex-direction: column; color: var(--page-text); background: var(--page-bg); }
 .app-main { flex: 1; position: relative; }
 .site-header { position: sticky; top: 0; z-index: 40; border-bottom: 1px solid var(--hairline); background: color-mix(in srgb, var(--page-bg) 92%, transparent); backdrop-filter: blur(18px); }
