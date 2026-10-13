@@ -3,6 +3,7 @@ import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { CommandPalette } from '@/components/command-palette';
 import { SmoothScroll } from '@/components/smooth-scroll';
+import { motion } from 'framer-motion';
 import { tokens } from '@/lib/tokens';
 
 interface AppShellProps { children: ReactNode }
@@ -29,7 +30,7 @@ export function AppShell({ children }: AppShellProps) {
   return (
     <SmoothScroll><div className="app-shell mono-theme">
       <Navbar onOpenCommandPalette={() => setCommandPaletteOpen(true)} />
-      <main className="app-main">{children}</main>
+      <motion.main className="app-main" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}>{children}</motion.main>
       <Footer />
       <CommandPalette isOpen={commandPaletteOpen} onClose={() => setCommandPaletteOpen(false)} />
     </div></SmoothScroll>
