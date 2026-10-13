@@ -14,25 +14,14 @@ export function CodePanel({
 }: CodePanelProps) {
   const [copied, setCopied] = useState(false);
   const activeLineRef = useRef<HTMLDivElement | null>(null);
-  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // Keep the active line visible without moving the document viewport.
+  // Auto-scroll active line into view smoothly
   useEffect(() => {
-    const activeLine = activeLineRef.current;
-    const container = scrollContainerRef.current;
-
-    if (activeLine && container) {
-      const lineTop = activeLine.offsetTop;
-      const lineBottom = lineTop + activeLine.offsetHeight;
-      const visibleTop = container.scrollTop;
-      const visibleBottom = visibleTop + container.clientHeight;
-
-      if (lineTop < visibleTop || lineBottom > visibleBottom) {
-        container.scrollTo({
-          top: Math.max(0, lineTop - (container.clientHeight - activeLine.offsetHeight) / 2),
-          behavior: 'smooth',
-        });
-      }
+    if (activeLineRef.current) {
+      activeLineRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
     }
   }, [activeLineIndex]);
 
@@ -50,17 +39,17 @@ export function CodePanel({
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
             <Code2 className="h-3.5 w-3.5" />
           </div>
-          <span className="text-sm font-mono font-semibold text-slate-200">
+          <span className="text-xs font-mono font-semibold text-slate-200">
             {algorithmId.replace('-', '_')}.cpp
           </span>
-          <span className="hidden sm:inline text-sm font-mono px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-slate-400">
+          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-slate-400">
             C++17 Engine Source
           </span>
         </div>
 
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+          className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
           title="Copy C++ code"
         >
           {copied ? (
@@ -78,7 +67,7 @@ export function CodePanel({
       </div>
 
       {/* Code Lines Display */}
-      <div ref={scrollContainerRef} className="max-h-80 overflow-y-auto p-3 font-mono text-sm leading-relaxed select-text">
+      <div className="max-h-80 overflow-y-auto p-3 font-mono text-xs sm:text-[13px] leading-relaxed select-text">
         {codeLines.map((line, idx) => {
           const isActive = idx === activeLineIndex;
 
@@ -94,7 +83,7 @@ export function CodePanel({
             >
               {/* Line Number */}
               <span
-                className={`w-8 shrink-0 select-none text-right pr-3 text-sm font-mono ${
+                className={`w-7 shrink-0 select-none text-right pr-3 text-[11px] font-mono ${
                   isActive ? 'text-cyan-400 font-bold' : 'text-slate-600'
                 }`}
               >

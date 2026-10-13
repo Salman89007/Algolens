@@ -50,7 +50,7 @@ export function PlaybackControls({
     <div className="w-full rounded-2xl border border-white/10 bg-slate-950/80 p-4 sm:p-5 shadow-xl backdrop-blur-xl space-y-4">
       {/* Scrubbable Timeline Progress Bar */}
       <div className="space-y-1.5">
-        <div className="flex items-center justify-between text-sm font-mono">
+        <div className="flex items-center justify-between text-xs font-mono">
           <span className="text-slate-400">
             Execution Timeline:{' '}
             <span className="text-cyan-400 font-bold">
@@ -142,7 +142,7 @@ export function PlaybackControls({
 
         {/* Speed Selector Presets */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 text-sm text-slate-400 mr-1">
+          <div className="flex items-center gap-1.5 text-xs text-slate-400 mr-1">
             <Gauge className="h-3.5 w-3.5 text-cyan-400" />
             <span className="hidden sm:inline">Speed:</span>
           </div>
@@ -154,7 +154,7 @@ export function PlaybackControls({
                 <button
                   key={p.label}
                   onClick={() => onSpeedChange(p.ms)}
-                  className={`px-2.5 py-1.5 text-sm font-mono rounded-lg transition-colors ${
+                  className={`px-2 py-1 text-xs font-mono rounded-lg transition-colors ${
                     active
                       ? 'bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30'
                       : 'text-slate-400 hover:text-white'

@@ -101,7 +101,7 @@ export function ArrayBars({ array, highlights }: ArrayBarsProps) {
   };
 
   return (
-    <div className="relative w-full rounded-2xl border border-white/10 bg-slate-950/70 p-4 sm:p-6 backdrop-blur-xl flex flex-col justify-between min-h-[280px] sm:min-h-[420px]">
+    <div className="relative w-full rounded-2xl border border-white/10 bg-slate-950/70 p-4 sm:p-6 backdrop-blur-xl flex flex-col justify-between min-h-[360px] sm:min-h-[420px]">
       {/* Visual Canvas */}
       <div className="w-full flex-1 flex items-end justify-center gap-1.5 sm:gap-3 px-2 pb-2 pt-10 rounded-xl bg-slate-900/60 border border-white/5 relative overflow-hidden">
         {/* Subtle grid lines background */}
@@ -130,13 +130,13 @@ export function ArrayBars({ array, highlights }: ArrayBarsProps) {
                 style={{ height: `${heightPercent}%` }}
                 className={`w-full rounded-t-lg bg-gradient-to-t border ${config.bg} ${config.border} ${config.shadow} flex flex-col items-center justify-start pt-1.5 transition-all duration-200 relative group`}
               >
-                <span className={`text-sm font-mono font-bold tracking-tight select-none ${config.text}`}>
+                <span className={`text-xs font-mono font-bold tracking-tight select-none ${config.text}`}>
                   {val}
                 </span>
               </div>
 
               {/* Index Subscript */}
-              <span className="text-sm font-mono text-slate-500 mt-2 select-none">
+              <span className="text-[10px] font-mono text-slate-500 mt-2 select-none">
                 [{idx}]
               </span>
             </div>
@@ -145,7 +145,7 @@ export function ArrayBars({ array, highlights }: ArrayBarsProps) {
       </div>
 
       {/* Legend Footer */}
-      <div className="mt-4 pt-3 border-t border-white/10 flex flex-wrap items-center justify-center gap-4 text-sm">
+      <div className="mt-4 pt-3 border-t border-white/10 flex flex-wrap items-center justify-center gap-4 text-xs">
         <div className="flex items-center gap-1.5">
           <span className="h-3 w-3 rounded bg-gradient-to-t from-cyan-500 to-blue-600 border border-cyan-400" />
           <span className="text-slate-400">Default</span>
