@@ -14,13 +14,24 @@ export function CodePanel({
 }: CodePanelProps) {
   const [copied, setCopied] = useState(false);
   const activeLineRef = useRef<HTMLDivElement | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // Auto-scroll active line into view smoothly
+  // Scroll only the code viewport; never move the document viewport.
   useEffect(() => {
-    if (activeLineRef.current) {
-      activeLineRef.current.scrollIntoView({
+    const activeLine = activeLineRef.current;
+    const container = scrollContainerRef.current;
+
+    if (!activeLine || !container || container.clientHeight === 0) return;
+
+    const lineTop = activeLine.offsetTop;
+    const lineBottom = lineTop + activeLine.offsetHeight;
+    const visibleTop = container.scrollTop;
+    const visibleBottom = visibleTop + container.clientHeight;
+
+    if (lineTop < visibleTop || lineBottom > visibleBottom) {
+      container.scrollTo({
+        top: Math.max(0, lineTop - (container.clientHeight - activeLine.offsetHeight) / 2),
         behavior: 'smooth',
-        block: 'nearest',
       });
     }
   }, [activeLineIndex]);
@@ -67,7 +78,7 @@ export function CodePanel({
       </div>
 
       {/* Code Lines Display */}
-      <div className="max-h-80 overflow-y-auto p-3 font-mono text-xs sm:text-[13px] leading-relaxed select-text">
+      <div ref={scrollContainerRef} className="max-h-80 overflow-y-auto overscroll-auto p-3 font-mono text-sm leading-relaxed select-text">
         {codeLines.map((line, idx) => {
           const isActive = idx === activeLineIndex;
 

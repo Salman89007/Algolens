@@ -101,7 +101,7 @@ export function ArrayBars({ array, highlights }: ArrayBarsProps) {
   };
 
   return (
-    <div className="relative w-full rounded-2xl border border-white/10 bg-slate-950/70 p-4 sm:p-6 backdrop-blur-xl flex flex-col justify-between min-h-[360px] sm:min-h-[420px]">
+    <div className="visualizer-canvas relative w-full rounded-2xl border border-white/10 bg-slate-950/70 p-4 sm:p-6 backdrop-blur-xl flex flex-col justify-between h-[min(40dvh,320px)] min-h-[240px] sm:h-auto sm:min-h-[420px]">
       {/* Visual Canvas */}
       <div className="w-full flex-1 flex items-end justify-center gap-1.5 sm:gap-3 px-2 pb-2 pt-10 rounded-xl bg-slate-900/60 border border-white/5 relative overflow-hidden">
         {/* Subtle grid lines background */}

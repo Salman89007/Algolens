@@ -7,6 +7,7 @@ import {
   RefreshCw,
   AlertCircle,
   HelpCircle,
+  ChevronDown,
 } from 'lucide-react';
 import { ALGORITHMS, getAlgorithmById } from '@/lib/algorithms-registry';
 import { useWasmEngine } from '@/hooks/use-wasm-engine';
@@ -53,6 +54,7 @@ export default function Visualizer() {
   const [loadingTrace, setLoadingTrace] = useState(false);
   const [traceError, setTraceError] = useState<string | null>(null);
   const [copiedShare, setCopiedShare] = useState(false);
+  const [isCodePanelOpen, setIsCodePanelOpen] = useState(false);
 
   // Re-run algorithm trace when algoId or inputArray changes
   const runTrace = useCallback(
@@ -183,7 +185,7 @@ export default function Visualizer() {
   const totalSteps = trace?.steps.length || 0;
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
+    <div className="visualizer-page container mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6">
       {/* ─── TOP HEADER BAR ─────────────────────────────────────── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
         <div>
@@ -354,16 +356,39 @@ export default function Visualizer() {
             sampleInputs={currentAlgo.sampleInputs}
             onApplyInput={handleApplyInput}
           />
+
+          <section className="lg:hidden">
+            <button
+              type="button"
+              onClick={() => setIsCodePanelOpen((open) => !open)}
+              aria-expanded={isCodePanelOpen}
+              className="flex w-full touch-manipulation items-center justify-between rounded-xl border border-white/10 bg-slate-950/80 px-4 py-3 text-sm font-semibold text-slate-100 backdrop-blur-md"
+            >
+              <span>View C++ code</span>
+              <ChevronDown className={`h-5 w-5 transition-transform ${isCodePanelOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {isCodePanelOpen && (
+              <div className="pt-3">
+                <CodePanel
+                  algorithmId={currentAlgo.id}
+                  codeLines={trace?.codeLines || []}
+                  activeLineIndex={currentStep.codeLine}
+                />
+              </div>
+            )}
+          </section>
         </div>
 
         {/* Right Column: Live C++ Code Panel + Info Card (4 cols) */}
         <div className="lg:col-span-4 space-y-6">
           {/* Live Code Panel */}
-          <CodePanel
-            algorithmId={currentAlgo.id}
-            codeLines={trace?.codeLines || []}
-            activeLineIndex={currentStep.codeLine}
-          />
+          <div className="hidden lg:block">
+            <CodePanel
+              algorithmId={currentAlgo.id}
+              codeLines={trace?.codeLines || []}
+              activeLineIndex={currentStep.codeLine}
+            />
+          </div>
 
           {/* Keyboard Shortcuts Hint Card */}
           <div className="rounded-xl border border-white/10 bg-slate-950/60 p-3.5 text-xs text-slate-400 backdrop-blur-md">

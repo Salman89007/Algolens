@@ -74,11 +74,23 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     background-color: #09090b;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: auto;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading, "Space Grotesk", system-ui, sans-serif);
     letter-spacing: -0.03em;
   }
+}
+
+.visualizer-page {
+  overscroll-behavior-y: auto;
+}
+
+.visualizer-canvas {
+  touch-action: pan-y;
+  overscroll-behavior-y: auto;
 }
 
 /* Linear/Raycast-style Hairline Cards & Surfaces */
