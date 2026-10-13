@@ -80,7 +80,7 @@ export function CustomInputCard({
           <Sliders className="h-4 w-4 text-cyan-400" />
           <span className="text-sm font-semibold text-white">Custom Array Input</span>
         </div>
-        <span className="text-xs text-slate-400 font-mono">
+        <span className="text-sm text-slate-400 font-mono">
           {currentInput.length} elements loaded
         </span>
       </div>
@@ -102,12 +102,12 @@ export function CustomInputCard({
               setError(null);
             }}
             placeholder="e.g. 5, 3, 8, 4, 2, 7, 1, 6"
-            className="w-full rounded-xl border border-white/10 bg-slate-900/90 px-3.5 py-2.5 text-sm font-mono text-cyan-300 placeholder-slate-500 focus:border-cyan-500/50 focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
+            className="w-full rounded-xl border border-white/10 bg-slate-900/90 px-3.5 py-3 text-base font-mono text-cyan-300 placeholder-slate-500 focus:border-cyan-500/50 focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
           />
         </div>
 
         {error && (
-          <div className="flex items-center gap-1.5 text-xs text-rose-400 font-medium">
+          <div className="flex items-center gap-1.5 text-sm text-rose-400 font-medium">
             <AlertCircle className="h-3.5 w-3.5 shrink-0" />
             <span>{error}</span>
           </div>
@@ -116,7 +116,7 @@ export function CustomInputCard({
         <div className="flex flex-wrap items-center justify-between gap-3">
           {/* Preset Buttons */}
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[11px] text-slate-400 mr-1 flex items-center gap-1">
+            <span className="text-sm text-slate-400 mr-1 flex items-center gap-1">
               <Sparkles className="h-3 w-3 text-cyan-400" /> Presets:
             </span>
             {sampleInputs.slice(0, 4).map((preset) => (
@@ -124,7 +124,7 @@ export function CustomInputCard({
                 type="button"
                 key={preset.label}
                 onClick={() => handlePreset(preset.input)}
-                className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-slate-300 hover:text-white hover:bg-white/10 hover:border-cyan-500/30 transition-colors"
+                className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/10 hover:border-cyan-500/30 transition-colors"
                 title={preset.description}
               >
                 {preset.label}
@@ -139,7 +139,7 @@ export function CustomInputCard({
               <button
                 type="button"
                 onClick={handleRandomize}
-                className="flex items-center gap-1.5 px-2.5 py-1 text-xs text-slate-300 hover:text-cyan-300 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-2 text-sm text-slate-300 hover:text-cyan-300 transition-colors"
                 title="Generate random array"
               >
                 <Dices className="h-3.5 w-3.5 text-cyan-400" />
@@ -148,7 +148,7 @@ export function CustomInputCard({
               <select
                 value={randomSize}
                 onChange={(e) => setRandomSize(Number(e.target.value))}
-                className="bg-transparent text-xs font-mono text-slate-300 focus:outline-none pr-1"
+                className="bg-transparent text-sm font-mono text-slate-300 focus:outline-none pr-1"
                 title="Random array length"
               >
                 <option value={5} className="bg-slate-900">
@@ -171,7 +171,7 @@ export function CustomInputCard({
 
             <button
               type="submit"
-              className="rounded-xl bg-cyan-400 px-4 py-1.5 text-xs font-semibold text-slate-950 hover:bg-cyan-300 shadow-sm transition-colors"
+              className="rounded-xl bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-cyan-300 shadow-sm transition-colors"
             >
               Apply Array
             </button>

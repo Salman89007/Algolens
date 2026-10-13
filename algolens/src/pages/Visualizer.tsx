@@ -7,6 +7,7 @@ import {
   RefreshCw,
   AlertCircle,
   HelpCircle,
+  ChevronDown,
 } from 'lucide-react';
 import { ALGORITHMS, getAlgorithmById } from '@/lib/algorithms-registry';
 import { useWasmEngine } from '@/hooks/use-wasm-engine';
@@ -17,6 +18,7 @@ import { CodePanel } from '@/components/visualizer/code-panel';
 import { CountersPanel } from '@/components/visualizer/counters-panel';
 import { CustomInputCard } from '@/components/visualizer/custom-input-card';
 import { InfoCard } from '@/components/visualizer/info-card';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 export default function Visualizer() {
   const { algoId = 'bubble-sort' } = useParams<{ algoId: string }>();
@@ -53,6 +55,7 @@ export default function Visualizer() {
   const [loadingTrace, setLoadingTrace] = useState(false);
   const [traceError, setTraceError] = useState<string | null>(null);
   const [copiedShare, setCopiedShare] = useState(false);
+  const [isCodePanelOpen, setIsCodePanelOpen] = useState(false);
 
   // Re-run algorithm trace when algoId or inputArray changes
   const runTrace = useCallback(
@@ -183,12 +186,12 @@ export default function Visualizer() {
   const totalSteps = trace?.steps.length || 0;
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
+    <div className="container mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6 text-base">
       {/* ─── TOP HEADER BAR ─────────────────────────────────────── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
         <div>
           {/* Breadcrumb / Algorithm Category */}
-          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 mb-1.5">
+          <div className="flex items-center gap-2 text-sm font-mono text-cyan-400 mb-1.5">
             <span>ALGORITHMS</span>
             <span>/</span>
             <span className="text-slate-400">{currentAlgo.categoryLabel.toUpperCase()}</span>
@@ -200,11 +203,11 @@ export default function Visualizer() {
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
               {currentAlgo.name}
             </h1>
-            <span className="rounded-md bg-cyan-500/10 px-2 py-0.5 text-xs font-mono font-semibold text-cyan-300 border border-cyan-500/20">
+            <span className="rounded-md bg-cyan-500/10 px-2 py-0.5 text-sm font-mono font-semibold text-cyan-300 border border-cyan-500/20">
               {currentAlgo.complexity.average}
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1 max-w-2xl">
+          <p className="text-sm text-slate-400 mt-2 max-w-2xl leading-relaxed">
             {currentAlgo.shortDescription}
           </p>
         </div>
@@ -219,7 +222,7 @@ export default function Visualizer() {
                 <button
                   key={algo.id}
                   onClick={() => handleSelectAlgo(algo.id)}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-all ${
                     active
                       ? 'bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30 shadow-sm'
                       : 'text-slate-400 hover:text-white'
@@ -234,7 +237,7 @@ export default function Visualizer() {
           {/* Share Button */}
           <button
             onClick={handleShareLink}
-            className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+            className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
             title="Copy shareable link with current array"
           >
             {copiedShare ? (
@@ -254,7 +257,7 @@ export default function Visualizer() {
 
       {/* ─── LIVE ERROR OR LOADING STATE ─────────────────────────── */}
       {traceError && (
-        <div className="rounded-xl border border-rose-500/30 bg-rose-950/30 p-4 text-xs text-rose-300 flex items-center justify-between">
+        <div className="rounded-xl border border-rose-500/30 bg-rose-950/30 p-4 text-sm text-rose-300 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
             <span>{traceError}</span>
@@ -276,7 +279,7 @@ export default function Visualizer() {
           <div className="relative">
             {loadingTrace && (
               <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm rounded-2xl">
-                <div className="flex items-center gap-2 text-xs font-mono text-cyan-400">
+                <div className="flex items-center gap-2 text-sm font-mono text-cyan-400">
                   <RefreshCw className="h-4 w-4 animate-spin" />
                   <span>Computing C++ execution trace...</span>
                 </div>
@@ -296,16 +299,16 @@ export default function Visualizer() {
                 <Sparkles className="h-4 w-4" />
               </div>
               <div className="truncate">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-semibold">
+                <div className="text-sm font-mono uppercase tracking-wider text-cyan-400 font-semibold">
                   Step {currentStepIdx + 1} of {totalSteps || 1}
                 </div>
-                <div className="text-sm font-medium text-slate-100 truncate">
+                <div className="text-base font-medium text-slate-100 truncate">
                   {currentStep.explanation}
                 </div>
               </div>
             </div>
 
-            <div className="hidden sm:flex items-center gap-2 text-[11px] font-mono text-slate-400 shrink-0">
+            <div className="hidden sm:flex items-center gap-2 text-sm font-mono text-slate-400 shrink-0">
               <span className="rounded bg-white/5 px-2 py-0.5 border border-white/5">
                 Line {currentStep.codeLine + 1}
               </span>
@@ -354,24 +357,42 @@ export default function Visualizer() {
             sampleInputs={currentAlgo.sampleInputs}
             onApplyInput={handleApplyInput}
           />
+
+          <div className="lg:hidden">
+            <Collapsible open={isCodePanelOpen} onOpenChange={setIsCodePanelOpen}>
+              <CollapsibleTrigger className="flex w-full items-center justify-between rounded-xl border border-white/10 bg-slate-950/80 px-4 py-3 text-sm font-semibold text-slate-100 backdrop-blur-md">
+                <span>View C++ code</span>
+                <ChevronDown className={`h-5 w-5 transition-transform ${isCodePanelOpen ? 'rotate-180' : ''}`} />
+              </CollapsibleTrigger>
+              <CollapsibleContent className="pt-3">
+                <CodePanel
+                  algorithmId={currentAlgo.id}
+                  codeLines={trace?.codeLines || []}
+                  activeLineIndex={currentStep.codeLine}
+                />
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
         </div>
 
         {/* Right Column: Live C++ Code Panel + Info Card (4 cols) */}
         <div className="lg:col-span-4 space-y-6">
           {/* Live Code Panel */}
-          <CodePanel
-            algorithmId={currentAlgo.id}
-            codeLines={trace?.codeLines || []}
-            activeLineIndex={currentStep.codeLine}
-          />
+          <div className="hidden lg:block">
+            <CodePanel
+              algorithmId={currentAlgo.id}
+              codeLines={trace?.codeLines || []}
+              activeLineIndex={currentStep.codeLine}
+            />
+          </div>
 
           {/* Keyboard Shortcuts Hint Card */}
-          <div className="rounded-xl border border-white/10 bg-slate-950/60 p-3.5 text-xs text-slate-400 backdrop-blur-md">
+          <div className="rounded-xl border border-white/10 bg-slate-950/60 p-4 text-sm text-slate-400 backdrop-blur-md">
             <div className="flex items-center gap-1.5 font-semibold text-slate-200 mb-2">
               <HelpCircle className="h-3.5 w-3.5 text-cyan-400" />
               <span>Keyboard Controls</span>
             </div>
-            <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
+            <div className="grid grid-cols-2 gap-3 text-sm font-mono">
               <div className="flex items-center justify-between">
                 <span>Play / Pause:</span>
                 <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">
