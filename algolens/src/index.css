@@ -4,18 +4,6 @@
 
 @layer base {
   :root {
-    --hairline: rgba(255, 255, 255, 0.08);
-    --font-heading: "Space Grotesk", system-ui, sans-serif;
-    --font-body: "Inter", system-ui, sans-serif;
-    --font-mono: "JetBrains Mono", ui-monospace, monospace;
-    --page-bg: #09090b;
-    --page-surface: #111114;
-    --soft-surface: rgba(255, 255, 255, 0.035);
-    --page-text: #fafafa;
-    --muted-text: #a1a1aa;
-    --accent-color: #8b5cf6;
-    --accent-hover: #7c3aed;
-    --spring: cubic-bezier(0.16, 1, 0.3, 1);
     --background: 240 6% 4%;        /* #09090b - Dark near-black */
     --foreground: 0 0% 98%;         /* #fafafa */
     --card: 240 5% 7%;              /* #111114 - Matte surface */
@@ -48,17 +36,6 @@
   }
 
   .dark {
-    --hairline: rgba(255, 255, 255, 0.08);
-    --font-heading: "Space Grotesk", system-ui, sans-serif;
-    --font-body: "Inter", system-ui, sans-serif;
-    --font-mono: "JetBrains Mono", ui-monospace, monospace;
-    --page-bg: #09090b;
-    --page-surface: #111114;
-    --soft-surface: rgba(255, 255, 255, 0.035);
-    --page-text: #fafafa;
-    --muted-text: #a1a1aa;
-    --accent-color: #8b5cf6;
-    --accent-hover: #7c3aed;
     --spring: cubic-bezier(0.16, 1, 0.3, 1);
     --background: 240 6% 4%;
     --foreground: 0 0% 98%;
