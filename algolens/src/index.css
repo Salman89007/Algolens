@@ -101,6 +101,11 @@
 
 .visualizer-page {
   overscroll-behavior-y: auto;
+  overflow-anchor: none;
+}
+
+.visualizer-page * {
+  overflow-anchor: none;
 }
 
 .visualizer-canvas {

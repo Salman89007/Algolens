@@ -183,7 +183,7 @@ export default function Visualizer() {
   const totalSteps = trace?.steps.length || 0;
 
   return (
-    <div className="visualizer-page container mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6">
+    <div className="visualizer-page container mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6" style={{ overflowAnchor: 'none' }}>
       {/* ─── TOP HEADER BAR ─────────────────────────────────────── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
         <div>
