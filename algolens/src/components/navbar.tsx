@@ -37,6 +37,16 @@ export function Navbar({ onOpenCommandPalette }: NavbarProps) {
             Overview
           </Link>
           <Link
+            to="/algorithms"
+            className={`rounded-lg px-3.5 py-2 text-sm font-semibold transition-colors ${
+              location.pathname === '/algorithms'
+                ? 'bg-slate-100 text-slate-950 shadow-xs'
+                : 'text-slate-600 hover:text-slate-950 hover:bg-slate-50'
+            }`}
+          >
+            Algorithms
+          </Link>
+          <Link
             to="/visualize/bubble-sort"
             className={`rounded-lg px-3.5 py-2 text-sm font-semibold transition-colors ${
               location.pathname.startsWith('/visualize')
