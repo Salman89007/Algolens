@@ -22,6 +22,7 @@ $OutDir = "$ProjectRoot\algolens\public\wasm"
 $Sources = @(
     "$EngineDir\main.cpp",
     "$EngineDir\algorithms\bubble_sort.cpp",
+    "$EngineDir\algorithms\insertion_sort.cpp",
     "$EngineDir\algorithms\merge_sort.cpp",
     "$EngineDir\algorithms\quick_sort.cpp"
 )
