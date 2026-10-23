@@ -9,7 +9,7 @@ interface ThemeContextType {
 }
 
 const ThemeContext = createContext<ThemeContextType>({
-  theme: 'dark',
+  theme: 'light',
   toggleTheme: () => {},
   setTheme: () => {},
 });
@@ -18,7 +18,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
     const saved = localStorage.getItem('algolens-theme');
     if (saved === 'light' || saved === 'dark') return saved;
-    return 'dark'; // Dark theme by default per specs
+    return 'light'; // Light theme by default
   });
 
   useEffect(() => {

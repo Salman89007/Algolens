@@ -4,81 +4,60 @@
 
 @layer base {
   :root {
-    --background: 240 6% 4%;        /* #09090b - Dark near-black */
-    --foreground: 0 0% 98%;         /* #fafafa */
-    --card: 240 5% 7%;              /* #111114 - Matte surface */
-    --card-foreground: 0 0% 98%;
-    --popover: 240 5% 9%;           /* #18181b */
-    --popover-foreground: 0 0% 98%;
-    --primary: 262 83% 58%;         /* Electric Violet #8B5CF6 */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 4% 14%;        /* #222226 */
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 4% 14%;
-    --muted-foreground: 240 5% 65%; /* #a1a1aa */
-    --accent: 262 83% 58%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 350 89% 60%;
+    /* Multi-layered light theme foundation (soft off-white, not flat white) */
+    --background: 210 20% 98%;        /* #f8fafc / soft off-white */
+    --foreground: 222 47% 11%;        /* #0f172a - Deep obsidian slate */
+    --card: 0 0% 100%;                /* #ffffff */
+    --card-foreground: 222 47% 11%;   /* #0f172a */
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 222 47% 11%;           /* Deep black #0f172a for primary elements */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;       /* #f1f5f9 */
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96.1%;           /* #f1f5f9 */
+    --muted-foreground: 215 16% 47%;  /* #64748b */
+    --accent: 210 40% 96.1%;          /* #f1f5f9 */
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 4% 16%;           /* rgba(255, 255, 255, 0.08) equivalent */
-    --input: 240 4% 16%;
-    --ring: 262 83% 58%;
-    --radius: 0.625rem;             /* 10px */
+    --border: 214 32% 91%;            /* #e2e8f0 - Thin soft border */
+    --input: 214 32% 91%;
+    --ring: 222 47% 11%;
+    --radius: 0.75rem;                /* 12px */
 
-    /* Algorithm Status Colors */
-    --algo-compare: 38 92% 50%;     /* Amber #f59e0b */
-    --algo-swap: 350 89% 60%;       /* Rose #f43f5e */
-    --algo-sorted: 160 84% 39%;     /* Emerald #10b981 */
-    --algo-current: 199 89% 48%;    /* Sky #0ea5e9 */
-    --algo-pivot: 262 83% 58%;      /* Electric Violet #8B5CF6 */
-    --algo-left: 217 91% 60%;       /* Indigo */
-    --algo-right: 172 90% 48%;      /* Teal */
+    /* Typography & Font Tokens */
+    --font-heading: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    --spring: cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* Clean monochrome/slate visualizer status colors (No old purple, cyan, amber) */
+    --algo-compare: 222 47% 11%;     /* Deep slate #0f172a */
+    --algo-swap: 0 0% 0%;             /* Solid black #000000 */
+    --algo-sorted: 160 84% 39%;       /* Deep emerald #10b981 */
+    --algo-current: 215 25% 27%;      /* Charcoal slate #334155 */
+    --algo-pivot: 215 16% 47%;        /* Mid slate #64748b */
+    --algo-default: 214 32% 91%;      /* Light slate #e2e8f0 */
   }
 
-  .dark {
-    --spring: cubic-bezier(0.16, 1, 0.3, 1);
-    --background: 240 6% 4%;
-    --foreground: 0 0% 98%;
-    --card: 240 5% 7%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 5% 9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 262 83% 58%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 4% 14%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 4% 14%;
-    --muted-foreground: 240 5% 65%;
-    --accent: 262 83% 58%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 350 89% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 4% 16%;
-    --input: 240 4% 16%;
-    --ring: 262 83% 58%;
-
-    --algo-compare: 38 92% 50%;
-    --algo-swap: 350 89% 60%;
-    --algo-sorted: 160 84% 39%;
-    --algo-current: 199 89% 48%;
-    --algo-pivot: 262 83% 58%;
-    --algo-left: 217 91% 60%;
-    --algo-right: 172 90% 48%;
+  /* Support clean light theme as default */
+  .light, :root {
+    --page-bg: #f8fafc;
+    --page-surface: rgba(255, 255, 255, 0.85);
+    --page-text: #0f172a;
+    --muted-text: #64748b;
+    --hairline: rgba(0, 0, 0, 0.08);
+    --accent-color: #0f172a;
+    --accent-hover: #1e293b;
   }
 }
 
 @supports (backdrop-filter: blur(12px)) {
-  .glass { backdrop-filter: blur(18px) saturate(1.1); }
-}
-
-.mono-theme {
-  --page-bg: #f7f7f5;
-  --page-surface: rgba(255,255,255,.72);
-  --page-text: #111;
-  --muted-text: #5c5c5c;
-  --hairline: rgba(0,0,0,.1);
-  --accent-color: #111;
-  --accent-hover: #303030;
+  .glass {
+    backdrop-filter: blur(16px) saturate(1.1);
+    -webkit-backdrop-filter: blur(16px) saturate(1.1);
+  }
 }
 
 @layer base {
@@ -86,19 +65,22 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    background-color: #09090b;
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
+    background-color: #f8fafc;
+    color: #0f172a;
     font-size: 16px;
     overflow-x: hidden;
     overflow-y: auto;
     overscroll-behavior-y: auto;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading, "Space Grotesk", system-ui, sans-serif);
-    letter-spacing: -0.03em;
+    font-family: var(--font-heading);
+    letter-spacing: -0.035em;
   }
 }
 
+/* Part 1 scroll bug safety guarantees */
 .visualizer-page {
   overscroll-behavior-y: auto;
   overflow-anchor: none;
@@ -112,50 +94,3 @@
   touch-action: pan-y;
   overscroll-behavior-y: auto;
 }
-
-/* Linear/Raycast-style Hairline Cards & Surfaces */
-.hairline-card {
-  background-color: #111114;
-  border: 1px solid var(--hairline);
-}
-
-.hairline-card-elevated {
-  background-color: #16161a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.6);
-}
-
-.glow-violet {
-  box-shadow: 0 0 24px -4px rgba(139, 92, 246, 0.22);
-}
-
-/* Respect Reduced Motion */
-@media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* Precision Scrollbars */
-::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 9999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.24);
-}
-
-
