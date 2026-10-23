@@ -74,13 +74,15 @@ export function CustomInputCard({
   };
 
   return (
-    <div className="w-full rounded-2xl border border-white/10 bg-slate-950/80 p-5 shadow-xl backdrop-blur-xl space-y-4">
-      <div className="flex items-center justify-between border-b border-white/10 pb-3">
+    <div className="w-full rounded-2xl border border-slate-200/80 bg-white/90 p-5 shadow-[0_8px_24px_rgba(0,0,0,0.04)] backdrop-blur-xl space-y-4">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
         <div className="flex items-center gap-2">
-          <Sliders className="h-4 w-4 text-cyan-400" />
-          <span className="text-sm font-semibold text-white">Custom Array Input</span>
+          <Sliders className="h-4 w-4 text-slate-700" />
+          <span className="text-sm font-bold text-slate-900 font-heading">
+            Custom Array Input
+          </span>
         </div>
-        <span className="text-xs text-slate-400 font-mono">
+        <span className="text-xs text-slate-500 font-mono">
           {currentInput.length} elements loaded
         </span>
       </div>
@@ -102,29 +104,30 @@ export function CustomInputCard({
               setError(null);
             }}
             placeholder="e.g. 5, 3, 8, 4, 2, 7, 1, 6"
-            className="w-full rounded-xl border border-white/10 bg-slate-900/90 px-3.5 py-2.5 text-sm font-mono text-cyan-300 placeholder-slate-500 focus:border-cyan-500/50 focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-2.5 text-sm font-mono text-slate-900 placeholder-slate-400 focus:border-slate-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 transition-all shadow-xs"
+            aria-label="Custom input array"
           />
         </div>
 
         {error && (
-          <div className="flex items-center gap-1.5 text-xs text-rose-400 font-medium">
-            <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+          <div className="flex items-center gap-1.5 text-xs text-rose-600 font-medium">
+            <AlertCircle className="h-4 w-4 shrink-0 text-rose-500" />
             <span>{error}</span>
           </div>
         )}
 
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
           {/* Preset Buttons */}
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[11px] text-slate-400 mr-1 flex items-center gap-1">
-              <Sparkles className="h-3 w-3 text-cyan-400" /> Presets:
+            <span className="text-xs text-slate-500 mr-1 flex items-center gap-1 font-medium">
+              <Sparkles className="h-3 w-3 text-slate-700" /> Presets:
             </span>
             {sampleInputs.slice(0, 4).map((preset) => (
               <button
                 type="button"
                 key={preset.label}
                 onClick={() => handlePreset(preset.input)}
-                className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-slate-300 hover:text-white hover:bg-white/10 hover:border-cyan-500/30 transition-colors"
+                className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:text-slate-950 hover:bg-slate-50 hover:border-slate-300 shadow-2xs transition-colors"
                 title={preset.description}
               >
                 {preset.label}
@@ -135,43 +138,35 @@ export function CustomInputCard({
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
             {/* Random generator */}
-            <div className="flex items-center gap-1 rounded-xl border border-white/10 bg-white/5 p-1">
+            <div className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white p-1 shadow-2xs">
               <button
                 type="button"
                 onClick={handleRandomize}
-                className="flex items-center gap-1.5 px-2.5 py-1 text-xs text-slate-300 hover:text-cyan-300 transition-colors"
+                className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-slate-700 hover:text-slate-950 transition-colors"
                 title="Generate random array"
               >
-                <Dices className="h-3.5 w-3.5 text-cyan-400" />
+                <Dices className="h-3.5 w-3.5 text-slate-800" />
                 <span>Random</span>
               </button>
               <select
                 value={randomSize}
                 onChange={(e) => setRandomSize(Number(e.target.value))}
-                className="bg-transparent text-xs font-mono text-slate-300 focus:outline-none pr-1"
+                className="bg-transparent text-xs font-mono text-slate-700 focus:outline-none pr-1 font-semibold"
                 title="Random array length"
+                aria-label="Random array size"
               >
-                <option value={5} className="bg-slate-900">
-                  5 items
-                </option>
-                <option value={8} className="bg-slate-900">
-                  8 items
-                </option>
-                <option value={12} className="bg-slate-900">
-                  12 items
-                </option>
-                <option value={16} className="bg-slate-900">
-                  16 items
-                </option>
-                <option value={20} className="bg-slate-900">
-                  20 items
-                </option>
+                <option value={5}>5 items</option>
+                <option value={8}>8 items</option>
+                <option value={12}>12 items</option>
+                <option value={16}>16 items</option>
+                <option value={20}>20 items</option>
               </select>
             </div>
 
+            {/* Primary Apply Button */}
             <button
               type="submit"
-              className="rounded-xl bg-cyan-400 px-4 py-1.5 text-xs font-semibold text-slate-950 hover:bg-cyan-300 shadow-sm transition-colors"
+              className="rounded-xl bg-slate-950 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-slate-800 active:scale-98 transition-all"
             >
               Apply Array
             </button>

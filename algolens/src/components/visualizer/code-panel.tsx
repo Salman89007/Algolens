@@ -40,36 +40,36 @@ export function CodePanel({
 
   return (
     <div
-      className="w-full rounded-2xl border border-white/10 bg-slate-950/90 shadow-xl backdrop-blur-xl flex flex-col overflow-hidden"
+      className="w-full rounded-2xl border border-slate-200/80 bg-white/95 shadow-[0_8px_24px_rgba(0,0,0,0.04)] backdrop-blur-xl flex flex-col overflow-hidden"
       style={{ overflowAnchor: 'none' }}
     >
       {/* Code Editor Header */}
-      <div className="flex items-center justify-between border-b border-white/10 bg-slate-900/60 px-4 py-2.5">
-        <div className="flex items-center gap-2">
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+      <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/80 px-4 py-3">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-slate-950 text-white shadow-2xs">
             <Code2 className="h-3.5 w-3.5" />
           </div>
-          <span className="text-xs font-mono font-semibold text-slate-200">
+          <span className="text-xs font-mono font-bold text-slate-900">
             {algorithmId.replace('-', '_')}.cpp
           </span>
-          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-slate-400">
-            C++17 Engine Source
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-200/70 text-slate-700 font-semibold">
+            C++17 Engine
           </span>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-mono text-slate-500">
+          <span className="text-xs font-mono text-slate-500 font-medium">
             line {safeActive + 1}
           </span>
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+            className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:text-slate-950 hover:bg-slate-50 shadow-2xs transition-colors"
             title="Copy C++ code"
           >
             {copied ? (
               <>
-                <Check className="h-3.5 w-3.5 text-emerald-400" />
-                <span className="text-emerald-400">Copied</span>
+                <Check className="h-3.5 w-3.5 text-emerald-600" />
+                <span className="text-emerald-700 font-semibold">Copied</span>
               </>
             ) : (
               <>
@@ -83,7 +83,7 @@ export function CodePanel({
 
       {/* Static code window — no internal scrolling, no scrollIntoView */}
       <div
-        className="p-3 font-mono text-sm leading-relaxed select-text"
+        className="p-3 font-mono text-xs sm:text-sm leading-relaxed select-text bg-white"
         style={{ overflowAnchor: 'none' }}
         aria-label="Current C++ code window"
       >
@@ -94,16 +94,16 @@ export function CodePanel({
           return (
             <div
               key={lineIndex}
-              className={`flex items-start rounded-md px-2 py-0.5 transition-colors group ${
+              className={`flex items-start rounded-md px-2.5 py-1 transition-colors ${
                 isActive
-                  ? 'bg-cyan-500/20 border-l-4 border-cyan-400 text-cyan-200 font-semibold shadow-inner'
-                  : 'text-slate-300 hover:bg-white/5'
+                  ? 'bg-slate-100/90 border-l-4 border-slate-950 text-slate-950 font-semibold shadow-2xs'
+                  : 'text-slate-600 hover:bg-slate-50'
               }`}
             >
               {/* Line Number */}
               <span
-                className={`w-7 shrink-0 select-none text-right pr-3 text-[11px] font-mono ${
-                  isActive ? 'text-cyan-400 font-bold' : 'text-slate-600'
+                className={`w-7 shrink-0 select-none text-right pr-3 text-xs font-mono ${
+                  isActive ? 'text-slate-950 font-bold' : 'text-slate-400'
                 }`}
               >
                 {lineIndex + 1}
@@ -116,8 +116,8 @@ export function CodePanel({
 
               {/* Active execution pointer indicator */}
               {isActive && (
-                <span className="hidden sm:inline-flex items-center gap-1 text-[10px] text-cyan-400 bg-cyan-950/60 border border-cyan-400/30 px-1.5 py-0.2 rounded font-mono ml-2">
-                  <Terminal className="h-2.5 w-2.5" /> executing
+                <span className="hidden sm:inline-flex items-center gap-1 text-[10px] text-slate-900 bg-slate-200/80 px-1.5 py-0.2 rounded font-mono font-bold ml-2">
+                  <Terminal className="h-2.5 w-2.5" /> exec
                 </span>
               )}
             </div>
@@ -134,23 +134,33 @@ export function MobileCodeWindow({ algorithmId, codeLines, activeLineIndex }: Co
 
   return (
     <section
-      className="rounded-2xl border border-white/10 bg-slate-950/90 p-4 shadow-xl backdrop-blur-xl"
+      className="rounded-2xl border border-slate-200/80 bg-white/95 p-4 shadow-[0_8px_24px_rgba(0,0,0,0.04)] backdrop-blur-xl"
       style={{ overflowAnchor: 'none' }}
     >
-      <div className="mb-3 flex items-center justify-between text-sm font-mono text-slate-300">
-        <span>{algorithmId.replace('-', '_')}.cpp</span>
-        <span className="text-slate-500">line {safeActive + 1}</span>
+      <div className="mb-3 flex items-center justify-between text-xs sm:text-sm font-mono text-slate-800">
+        <span className="font-bold">{algorithmId.replace('-', '_')}.cpp</span>
+        <span className="text-slate-500 font-medium">line {safeActive + 1}</span>
       </div>
       <div
-        className="space-y-1 font-mono text-sm leading-relaxed"
+        className="space-y-1 font-mono text-xs sm:text-sm leading-relaxed"
         style={{ overflowAnchor: 'none' }}
         aria-label="Current C++ code window"
       >
         {visibleLines.map((line, index) => {
           const lineIndex = start + index;
+          const isActive = lineIndex === safeActive;
           return (
-            <div key={lineIndex} className={`flex rounded-md px-2 py-1 ${lineIndex === safeActive ? 'bg-cyan-500/20 text-cyan-100 ring-1 ring-cyan-400/40' : 'text-slate-400'}`}>
-              <span className="w-8 shrink-0 select-none text-right pr-3 text-slate-500">{lineIndex + 1}</span>
+            <div
+              key={lineIndex}
+              className={`flex rounded-md px-2 py-1 ${
+                isActive
+                  ? 'bg-slate-100 border-l-4 border-slate-950 text-slate-950 font-semibold'
+                  : 'text-slate-600'
+              }`}
+            >
+              <span className={`w-8 shrink-0 select-none text-right pr-3 ${isActive ? 'text-slate-950 font-bold' : 'text-slate-400'}`}>
+                {lineIndex + 1}
+              </span>
               <code className="min-w-0 break-all whitespace-pre-wrap">{line}</code>
             </div>
           );

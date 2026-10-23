@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams, useNavigate, useSearchParams } from 'react-router';
+import { useParams, useNavigate, useSearchParams, Link } from 'react-router';
 import {
   Sparkles,
   Share2,
@@ -7,6 +7,7 @@ import {
   RefreshCw,
   AlertCircle,
   HelpCircle,
+  ArrowLeft,
 } from 'lucide-react';
 import { ALGORITHMS, getAlgorithmById } from '@/lib/algorithms-registry';
 import { useWasmEngine } from '@/hooks/use-wasm-engine';
@@ -99,14 +100,22 @@ export default function Visualizer() {
   const handleApplyInput = (newArr: number[]) => {
     setInputArray(newArr);
     updateUrlParams(newArr);
+    runTrace(currentAlgo.id, newArr);
+  };
+
+  // Copy share URL
+  const handleShareLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopiedShare(true);
+    setTimeout(() => setCopiedShare(false), 2000);
   };
 
   // Playback timer loop
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (isPlaying && trace && trace.steps.length > 0) {
-      timerRef.current = setInterval(() => {
+    if (isPlaying && trace) {
+      timerRef.current = window.setInterval(() => {
         setCurrentStepIdx((prev) => {
           if (prev >= trace.steps.length - 1) {
             setIsPlaying(false);
@@ -124,40 +133,29 @@ export default function Visualizer() {
     };
   }, [isPlaying, trace, speedMs]);
 
-  // Keyboard navigation shortcuts
+  // Keyboard shortcut controls
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore if typing in input field
-      if (
-        e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement
-      ) {
+      // Ignore if typing inside input
+      if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
         return;
       }
 
       if (e.code === 'Space') {
         e.preventDefault();
-        setIsPlaying((prev) => !prev);
+        setIsPlaying((p) => !p);
       } else if (e.code === 'ArrowRight') {
         e.preventDefault();
         setIsPlaying(false);
-        if (trace) {
-          setCurrentStepIdx((prev) => Math.min(prev + 1, trace.steps.length - 1));
-        }
+        if (trace) setCurrentStepIdx((p) => Math.min(p + 1, trace.steps.length - 1));
       } else if (e.code === 'ArrowLeft') {
         e.preventDefault();
         setIsPlaying(false);
-        setCurrentStepIdx((prev) => Math.max(prev - 1, 0));
-      } else if (e.key === 'r' || e.key === 'R' || e.code === 'Home') {
+        setCurrentStepIdx((p) => Math.max(p - 1, 0));
+      } else if (e.code === 'KeyR') {
         e.preventDefault();
         setIsPlaying(false);
         setCurrentStepIdx(0);
-      } else if (e.code === 'End') {
-        e.preventDefault();
-        setIsPlaying(false);
-        if (trace) {
-          setCurrentStepIdx(trace.steps.length - 1);
-        }
       }
     };
 
@@ -165,64 +163,64 @@ export default function Visualizer() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [trace]);
 
-  // Copy shareable link
-  const handleShareLink = () => {
-    navigator.clipboard.writeText(window.location.href);
-    setCopiedShare(true);
-    setTimeout(() => setCopiedShare(false), 2500);
-  };
-
+  // Current active step data fallback
   const currentStep: Step = trace?.steps[currentStepIdx] || {
     array: inputArray,
     highlights: [],
-    codeLine: 0,
-    explanation: 'Initializing algorithm execution trace...',
+    codeLine: 1,
+    explanation: loadingTrace ? 'Computing trace...' : 'Ready to execute',
     counters: { comparisons: 0, swaps: 0, steps: 0 },
   };
 
   const totalSteps = trace?.steps.length || 0;
 
   return (
-    <div className="visualizer-page container mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6" style={{ overflowAnchor: 'none' }}>
-      {/* ─── TOP HEADER BAR ─────────────────────────────────────── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
+    <div
+      className="visualizer-page mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-8"
+      style={{ overflowAnchor: 'none' }}
+    >
+      {/* ─── Top Header Bar ───────────────────────────────────────── */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-200/80 pb-6">
         <div>
           {/* Breadcrumb / Algorithm Category */}
-          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 mb-1.5">
-            <span>ALGORITHMS</span>
+          <div className="flex items-center gap-2 text-xs font-mono font-semibold text-slate-500 mb-2">
+            <Link to="/algorithms" className="hover:text-slate-950 transition-colors flex items-center gap-1">
+              <ArrowLeft className="h-3 w-3" />
+              <span>ALGORITHMS</span>
+            </Link>
             <span>/</span>
-            <span className="text-slate-400">{currentAlgo.categoryLabel.toUpperCase()}</span>
+            <span>{currentAlgo.categoryLabel.toUpperCase()}</span>
             <span>/</span>
-            <span className="text-white font-bold">{currentAlgo.name.toUpperCase()}</span>
+            <span className="text-slate-950 font-bold">{currentAlgo.name.toUpperCase()}</span>
           </div>
 
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-950 tracking-tight font-heading">
               {currentAlgo.name}
             </h1>
-            <span className="rounded-md bg-cyan-500/10 px-2 py-0.5 text-xs font-mono font-semibold text-cyan-300 border border-cyan-500/20">
-              {currentAlgo.complexity.average}
+            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-mono font-bold text-slate-800 border border-slate-200/80">
+              Avg {currentAlgo.complexity.average}
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1 max-w-2xl">
+          <p className="text-sm text-slate-600 mt-1.5 max-w-2xl font-medium">
             {currentAlgo.shortDescription}
           </p>
         </div>
 
         {/* Algorithm Switcher Tabs & Share Link */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
           {/* Sorting algorithm selector tabs */}
-          <div className="flex items-center rounded-xl border border-white/10 bg-slate-900/80 p-1">
+          <div className="flex items-center rounded-xl border border-slate-200/80 bg-slate-100/80 p-1">
             {ALGORITHMS.map((algo) => {
               const active = algo.id === currentAlgo.id;
               return (
                 <button
                   key={algo.id}
                   onClick={() => handleSelectAlgo(algo.id)}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
                     active
-                      ? 'bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30 shadow-sm'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-slate-950 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-950 hover:bg-white/60'
                   }`}
                 >
                   {algo.name}
@@ -234,13 +232,13 @@ export default function Visualizer() {
           {/* Share Button */}
           <button
             onClick={handleShareLink}
-            className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+            className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 hover:text-slate-950 hover:bg-slate-50 shadow-2xs transition-colors"
             title="Copy shareable link with current array"
           >
             {copiedShare ? (
               <>
-                <Check className="h-3.5 w-3.5 text-emerald-400" />
-                <span className="text-emerald-400">Copied!</span>
+                <Check className="h-3.5 w-3.5 text-emerald-600" />
+                <span className="text-emerald-700">Copied!</span>
               </>
             ) : (
               <>
@@ -252,33 +250,33 @@ export default function Visualizer() {
         </div>
       </div>
 
-      {/* ─── LIVE ERROR OR LOADING STATE ─────────────────────────── */}
+      {/* ─── Live Error Notification ─────────────────────────────── */}
       {traceError && (
-        <div className="rounded-xl border border-rose-500/30 bg-rose-950/30 p-4 text-xs text-rose-300 flex items-center justify-between">
+        <div className="rounded-2xl border border-rose-200 bg-rose-50/80 p-4 text-xs sm:text-sm text-rose-800 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
-            <span>{traceError}</span>
+            <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
+            <span className="font-medium">{traceError}</span>
           </div>
           <button
             onClick={() => runTrace(currentAlgo.id, inputArray)}
-            className="px-3 py-1 rounded-lg bg-rose-500/20 text-rose-200 hover:bg-rose-500/30 font-medium"
+            className="px-3 py-1.5 rounded-xl bg-rose-600 text-white hover:bg-rose-700 font-semibold text-xs shadow-xs"
           >
             Retry Trace
           </button>
         </div>
       )}
 
-      {/* ─── MAIN WORKSPACE GRID ─────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* ─── Main Workspace Grid ─────────────────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column: Visualization Canvas + Playback Controls + Counters (8 cols) */}
-        <div className="lg:col-span-8 space-y-4">
+        <div className="lg:col-span-8 space-y-6">
           {/* Canvas Box */}
           <div className="relative">
             {loadingTrace && (
-              <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm rounded-2xl">
-                <div className="flex items-center gap-2 text-xs font-mono text-cyan-400">
-                  <RefreshCw className="h-4 w-4 animate-spin" />
-                  <span>Computing C++ execution trace...</span>
+              <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/70 backdrop-blur-sm rounded-2xl">
+                <div className="flex items-center gap-2 text-xs font-mono font-semibold text-slate-900 bg-white px-4 py-2 rounded-full border border-slate-200 shadow-md">
+                  <RefreshCw className="h-4 w-4 animate-spin text-slate-950" />
+                  <span>Computing C++ execution trace…</span>
                 </div>
               </div>
             )}
@@ -290,23 +288,23 @@ export default function Visualizer() {
           </div>
 
           {/* Current Step Explanation Box */}
-          <div className="rounded-xl border border-cyan-500/30 bg-slate-900/90 px-4 py-3 shadow-sm backdrop-blur-md flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5 overflow-hidden">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-cyan-500/10 text-cyan-400 shrink-0">
+          <div className="rounded-2xl border border-slate-200/80 bg-white/95 px-5 py-4 shadow-[0_4px_16px_rgba(0,0,0,0.03)] backdrop-blur-md flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 text-slate-900 shrink-0">
                 <Sparkles className="h-4 w-4" />
               </div>
               <div className="truncate">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-semibold">
+                <div className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-bold">
                   Step {currentStepIdx + 1} of {totalSteps || 1}
                 </div>
-                <div className="text-sm font-medium text-slate-100 truncate">
+                <div className="text-sm sm:text-base font-semibold text-slate-900 truncate mt-0.5">
                   {currentStep.explanation}
                 </div>
               </div>
             </div>
 
-            <div className="hidden sm:flex items-center gap-2 text-[11px] font-mono text-slate-400 shrink-0">
-              <span className="rounded bg-white/5 px-2 py-0.5 border border-white/5">
+            <div className="hidden sm:flex items-center gap-2 text-xs font-mono font-semibold text-slate-600 shrink-0">
+              <span className="rounded-md bg-slate-100 px-2.5 py-1 border border-slate-200/60">
                 Line {currentStep.codeLine + 1}
               </span>
             </div>
@@ -342,6 +340,7 @@ export default function Visualizer() {
             onSpeedChange={(newSpeed) => setSpeedMs(newSpeed)}
           />
 
+          {/* Mobile Code Window */}
           <div className="lg:hidden">
             <MobileCodeWindow
               algorithmId={currentAlgo.id}
@@ -362,7 +361,6 @@ export default function Visualizer() {
             sampleInputs={currentAlgo.sampleInputs}
             onApplyInput={handleApplyInput}
           />
-
         </div>
 
         {/* Right Column: Live C++ Code Panel + Info Card (4 cols) */}
@@ -377,33 +375,33 @@ export default function Visualizer() {
           </div>
 
           {/* Keyboard Shortcuts Hint Card */}
-          <div className="rounded-xl border border-white/10 bg-slate-950/60 p-3.5 text-xs text-slate-400 backdrop-blur-md">
-            <div className="flex items-center gap-1.5 font-semibold text-slate-200 mb-2">
-              <HelpCircle className="h-3.5 w-3.5 text-cyan-400" />
+          <div className="rounded-2xl border border-slate-200/80 bg-white/80 p-4 text-xs text-slate-600 backdrop-blur-md shadow-2xs">
+            <div className="flex items-center gap-2 font-bold text-slate-900 mb-3 font-heading">
+              <HelpCircle className="h-4 w-4 text-slate-700" />
               <span>Keyboard Controls</span>
             </div>
-            <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
+            <div className="grid grid-cols-2 gap-2.5 text-xs font-mono">
               <div className="flex items-center justify-between">
                 <span>Play / Pause:</span>
-                <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">
+                <kbd className="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-slate-800 font-bold">
                   Space
                 </kbd>
               </div>
               <div className="flex items-center justify-between">
                 <span>Step Forward:</span>
-                <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">
+                <kbd className="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-slate-800 font-bold">
                   →
                 </kbd>
               </div>
               <div className="flex items-center justify-between">
                 <span>Step Back:</span>
-                <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">
+                <kbd className="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-slate-800 font-bold">
                   ←
                 </kbd>
               </div>
               <div className="flex items-center justify-between">
                 <span>Restart:</span>
-                <kbd className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">
+                <kbd className="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-slate-800 font-bold">
                   R
                 </kbd>
               </div>
