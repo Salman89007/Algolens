@@ -173,10 +173,67 @@ export const ALGORITHMS: AlgorithmMeta[] = [
       },
     ],
   },
+  {
+    id: 'insertion-sort',
+    name: 'Insertion Sort',
+    category: 'sorting',
+    categoryLabel: 'Sorting',
+    phase: 2,
+    isImplemented: true,
+    shortDescription: 'Builds the sorted array one element at a time by shifting larger items to make room for each key.',
+    description:
+      'Insertion Sort iterates through an input array, consuming one element per repetition and growing a sorted output list. At each iteration, it removes one element from the unsorted section, finds the location it belongs within the sorted region, and inserts it there by shifting larger elements to the right.',
+    complexity: {
+      best: 'O(n)',
+      average: 'O(n²)',
+      worst: 'O(n²)',
+      space: 'O(1)',
+      stable: true,
+      inPlace: true,
+    },
+    whenToUse: [
+      'Small datasets (typically < 50 items) where low overhead beats complex divide-and-conquer algorithms.',
+      'Data streams that arrive online or are already substantially sorted.',
+      'Used as the final cleanup pass in hybrid algorithms like Timsort and Introsort.',
+    ],
+    keyHighlights: [
+      'Simple online algorithm: can sort a list as it receives it',
+      'Adaptive: O(n) time when array is already nearly sorted',
+      'Stable sort with zero additional auxiliary space (O(1) memory)',
+    ],
+    defaultInput: [12, 11, 13, 5, 6],
+    sampleInputs: [
+      {
+        label: 'Textbook Example',
+        description: 'Standard mixed array for step-by-step key insertions',
+        input: [12, 11, 13, 5, 6],
+      },
+      {
+        label: 'Nearly Sorted',
+        description: 'Demonstrating linear O(n) performance on mostly sorted input',
+        input: [2, 3, 4, 5, 1],
+      },
+      {
+        label: 'Reverse Sorted',
+        description: 'Worst-case quadratic shifts across all items',
+        input: [9, 7, 5, 3, 1],
+      },
+      {
+        label: 'With Duplicates',
+        description: 'Testing stability with identical values',
+        input: [5, 2, 8, 2, 9, 1],
+      },
+      {
+        label: 'Small Array',
+        description: '5-element array for clean debugging',
+        input: [5, 3, 1, 4, 2],
+      },
+    ],
+  },
 ];
 
 export const ALL_CATEGORIES = [
-  { id: 'sorting', name: 'Sorting', count: 10, implemented: 3, icon: 'ArrowUpDown' },
+  { id: 'sorting', name: 'Sorting', count: 10, implemented: 4, icon: 'ArrowUpDown' },
   { id: 'searching', name: 'Searching', count: 5, implemented: 0, icon: 'Search' },
   { id: 'arrays', name: 'Array Patterns', count: 5, implemented: 0, icon: 'Grid' },
   { id: 'linked-lists', name: 'Linked Lists', count: 4, implemented: 0, icon: 'GitCommit' },
