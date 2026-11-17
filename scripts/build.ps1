@@ -25,7 +25,8 @@ $Sources = @(
     "$EngineDir\algorithms\insertion_sort.cpp",
     "$EngineDir\algorithms\merge_sort.cpp",
     "$EngineDir\algorithms\quick_sort.cpp",
-    "$EngineDir\algorithms\selection_sort.cpp"
+    "$EngineDir\algorithms\selection_sort.cpp",
+    "$EngineDir\algorithms\shell_sort.cpp"
 )
 $IncludeDir = "$EngineDir\include"
 

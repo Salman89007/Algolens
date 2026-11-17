@@ -142,7 +142,7 @@ async function main() {
     assert(algos.length >= 3, `at least 3 algorithms registered (got ${algos.length})`);
 
     // Every implemented sort must be registered
-    for (const sortId of ['bubble-sort', 'merge-sort', 'quick-sort', 'insertion-sort', 'selection-sort']) {
+    for (const sortId of ['bubble-sort', 'merge-sort', 'quick-sort', 'insertion-sort', 'selection-sort', 'shell-sort']) {
         assert(algos.includes(sortId), `registered: ${sortId}`);
     }
 

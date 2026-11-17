@@ -287,10 +287,67 @@ export const ALGORITHMS: AlgorithmMeta[] = [
       },
     ],
   },
+  {
+    id: 'shell-sort',
+    name: 'Shell Sort',
+    category: 'sorting',
+    categoryLabel: 'Sorting',
+    phase: 2,
+    isImplemented: true,
+    shortDescription: 'Generalizes insertion sort by comparing and shifting elements that are a shrinking gap apart.',
+    description:
+      'Shell Sort is an in-place generalization of insertion sort. Instead of comparing only adjacent elements, it starts with a large gap and performs a gapped insertion sort at that distance, then halves the gap and repeats until the gap reaches 1. The early passes move elements long distances quickly, so the final adjacent pass has very little work left.',
+    complexity: {
+      best: 'O(n log n)',
+      average: 'O(n log² n)',
+      worst: 'O(n²)',
+      space: 'O(1)',
+      stable: false,
+      inPlace: true,
+    },
+    whenToUse: [
+      'Medium-sized arrays where a simple in-place sort should beat plain insertion sort.',
+      'Embedded or memory-constrained systems: no recursion and O(1) extra space.',
+      'As a sub-quadratic alternative when quick sort or merge sort is unavailable.',
+    ],
+    keyHighlights: [
+      'Shrinking gap sequence (n/2, n/4, ... , 1)',
+      'Gapped insertion sort moves elements long distances early',
+      'Final gap of 1 guarantees a fully sorted array',
+    ],
+    defaultInput: [12, 34, 54, 2, 3],
+    sampleInputs: [
+      {
+        label: 'Textbook Example',
+        description: 'Classic mixed array showing each shrinking gap',
+        input: [12, 34, 54, 2, 3],
+      },
+      {
+        label: 'Already Sorted',
+        description: 'Each gap pass performs comparisons but no shifts',
+        input: [1, 2, 3, 4, 5],
+      },
+      {
+        label: 'Reverse Sorted',
+        description: 'Large gaps move the biggest elements quickly toward the end',
+        input: [9, 7, 5, 3, 1],
+      },
+      {
+        label: 'With Duplicates',
+        description: 'Gapped comparisons with repeated values',
+        input: [5, 2, 8, 2, 9, 1],
+      },
+      {
+        label: 'Small Array',
+        description: '5-element array for clean debugging',
+        input: [5, 3, 1, 4, 2],
+      },
+    ],
+  },
 ];
 
 export const ALL_CATEGORIES = [
-  { id: 'sorting', name: 'Sorting', count: 10, implemented: 5, icon: 'ArrowUpDown' },
+  { id: 'sorting', name: 'Sorting', count: 10, implemented: 6, icon: 'ArrowUpDown' },
   { id: 'searching', name: 'Searching', count: 5, implemented: 0, icon: 'Search' },
   { id: 'arrays', name: 'Array Patterns', count: 5, implemented: 0, icon: 'Grid' },
   { id: 'linked-lists', name: 'Linked Lists', count: 4, implemented: 0, icon: 'GitCommit' },
