@@ -1,11 +1,13 @@
 /**
  * Node.js test harness for AlgoLens WASM engine.
- * Tests all registered algorithms and validates trace output.
+ * Tests every registered algorithm and validates trace output.
+ *
+ * Sorting algorithms must end fully sorted; search algorithms must end
+ * with an explicit found / not-found step and highlight the match.
  *
  * Usage: node scripts/test_engine.mjs
  */
 
-import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
@@ -24,6 +26,27 @@ const BOLD = '\x1b[1m';
 
 let passed = 0;
 let failed = 0;
+
+const SORTS = [
+    'bubble-sort',
+    'merge-sort',
+    'quick-sort',
+    'insertion-sort',
+    'selection-sort',
+    'shell-sort',
+    'heap-sort',
+    'counting-sort',
+    'radix-sort',
+    'bucket-sort',
+];
+
+const SEARCHES = [
+    'linear-search',
+    'binary-search',
+    'jump-search',
+    'interpolation-search',
+    'exponential-search',
+];
 
 function assert(condition, message) {
     if (condition) {
@@ -53,11 +76,12 @@ async function loadEngine() {
 }
 
 function runAlgorithm(Module, algoId, input) {
+    const inputJson = typeof input === 'string' ? input : JSON.stringify(input);
     const result = Module.ccall(
         'run_algorithm',
         'string',
         ['string', 'string'],
-        [algoId, input]
+        [algoId, inputJson]
     );
     return JSON.parse(result);
 }
@@ -67,7 +91,8 @@ function listAlgorithms(Module) {
     return JSON.parse(result);
 }
 
-function validateTrace(trace, algoId, inputArr) {
+// Checks every trace must satisfy, regardless of algorithm family
+function validateCommonTrace(trace, algoId, inputArr) {
     assert(trace.algorithmId === algoId, `algorithmId is "${algoId}"`);
     assert(Array.isArray(trace.codeLines), `codeLines is an array`);
     assert(trace.codeLines.length > 0, `codeLines is non-empty`);
@@ -79,21 +104,6 @@ function validateTrace(trace, algoId, inputArr) {
     assert(
         JSON.stringify(firstStep.array) === JSON.stringify(inputArr),
         `first step has original array`
-    );
-
-    // Check last step is sorted
-    const lastStep = trace.steps[trace.steps.length - 1];
-    const sorted = [...inputArr].sort((a, b) => a - b);
-    assert(
-        JSON.stringify(lastStep.array) === JSON.stringify(sorted),
-        `last step has sorted array`
-    );
-
-    // Check all sorted highlights on last step
-    assert(
-        lastStep.highlights.length === inputArr.length &&
-        lastStep.highlights.every(h => h.type === 'sorted'),
-        `last step highlights all elements as "sorted"`
     );
 
     // Check counters are non-decreasing
@@ -123,6 +133,44 @@ function validateTrace(trace, algoId, inputArr) {
     );
 }
 
+// Sorting algorithms end with a fully sorted array
+function validateSortTrace(trace, inputArr) {
+    const lastStep = trace.steps[trace.steps.length - 1];
+    const sorted = [...inputArr].sort((a, b) => a - b);
+    assert(
+        JSON.stringify(lastStep.array) === JSON.stringify(sorted),
+        `last step has sorted array`
+    );
+    assert(
+        lastStep.highlights.length === inputArr.length &&
+        lastStep.highlights.every(h => h.type === 'sorted'),
+        `last step highlights all elements as "sorted"`
+    );
+}
+
+// Search algorithms end with an explicit found / not-found result
+function validateSearchTrace(trace, target, shouldFind) {
+    const lastStep = trace.steps[trace.steps.length - 1];
+    const hasFoundHighlight = trace.steps.some(s =>
+        s.highlights.some(h => h.type === 'found')
+    );
+
+    assert(
+        hasFoundHighlight === shouldFind,
+        shouldFind ? `highlights a "found" match` : `no "found" highlight when absent`
+    );
+    assert(
+        lastStep.explanation.includes(String(target)),
+        `final step names target ${target}`
+    );
+    assert(
+        shouldFind
+            ? /found/i.test(lastStep.explanation)
+            : /not present|not found/i.test(lastStep.explanation),
+        shouldFind ? `final step says found` : `final step says not present`
+    );
+}
+
 async function main() {
     console.log(`\n${BOLD}${CYAN}AlgoLens Engine Test Harness${RESET}\n`);
 
@@ -132,7 +180,7 @@ async function main() {
         console.log(`${GREEN}✓${RESET} WASM module loaded successfully\n`);
     } catch (e) {
         console.error(`${RED}✗${RESET} Failed to load WASM module:`, e.message);
-        console.error(`\n  Make sure you ran: .\\scripts\\build.ps1`);
+        console.error(`\n  Make sure you ran: .\\\\scripts\\\\build.ps1`);
         process.exit(1);
     }
 
@@ -141,13 +189,13 @@ async function main() {
     console.log(`${CYAN}Registered algorithms:${RESET} ${algos.join(', ')}\n`);
     assert(algos.length >= 3, `at least 3 algorithms registered (got ${algos.length})`);
 
-    // Every implemented sort must be registered
-    for (const sortId of ['bubble-sort', 'merge-sort', 'quick-sort', 'insertion-sort', 'selection-sort', 'shell-sort', 'heap-sort', 'counting-sort', 'radix-sort', 'bucket-sort']) {
-        assert(algos.includes(sortId), `registered: ${sortId}`);
+    // Every implemented sort and search must be registered
+    for (const id of [...SORTS, ...SEARCHES]) {
+        assert(algos.includes(id), `registered: ${id}`);
     }
 
-    // Test inputs
-    const testCases = [
+    // Sorting test inputs
+    const sortCases = [
         { name: 'normal', input: [5, 3, 1, 4, 2] },
         { name: 'already sorted', input: [1, 2, 3, 4, 5] },
         { name: 'reverse sorted', input: [5, 4, 3, 2, 1] },
@@ -156,14 +204,47 @@ async function main() {
         { name: 'duplicates', input: [3, 1, 4, 1, 5, 9, 2, 6, 5, 3] },
     ];
 
-    for (const algoId of algos) {
+    for (const algoId of SORTS) {
         console.log(`\n${BOLD}Testing: ${YELLOW}${algoId}${RESET}`);
 
-        for (const tc of testCases) {
+        for (const tc of sortCases) {
             console.log(`\n  ${CYAN}Input (${tc.name}):${RESET} [${tc.input.join(', ')}]`);
             try {
-                const trace = runAlgorithm(Module, algoId, JSON.stringify(tc.input));
-                validateTrace(trace, algoId, tc.input);
+                const trace = runAlgorithm(Module, algoId, tc.input);
+                validateCommonTrace(trace, algoId, tc.input);
+                validateSortTrace(trace, tc.input);
+            } catch (e) {
+                failed++;
+                console.log(`  ${RED}✗ Exception: ${e.message}${RESET}`);
+            }
+        }
+    }
+
+    // Search test inputs (sorted where the algorithm requires it)
+    const searchCases = [
+        { name: 'target in middle', array: [1, 3, 5, 7, 9, 11], target: 7, shouldFind: true },
+        { name: 'target at start', array: [2, 4, 6, 8, 10], target: 2, shouldFind: true },
+        { name: 'target absent', array: [1, 2, 3, 4, 5], target: 9, shouldFind: false },
+        { name: 'single element hit', array: [42], target: 42, shouldFind: true },
+        { name: 'single element miss', array: [42], target: 7, shouldFind: false },
+        { name: 'duplicates', array: [2, 2, 3, 7, 7, 7, 9], target: 7, shouldFind: true },
+    ];
+
+    for (const algoId of SEARCHES) {
+        console.log(`\n${BOLD}Testing: ${YELLOW}${algoId}${RESET}`);
+
+        for (const tc of searchCases) {
+            console.log(
+                `\n  ${CYAN}Input (${tc.name}):${RESET} [${tc.array.join(', ')}] target ${tc.target}`
+            );
+            try {
+                const trace = runAlgorithm(
+                    Module,
+                    algoId,
+                    { array: tc.array, target: tc.target }
+                );
+                validateCommonTrace(trace, algoId, tc.array);
+                validateSearchTrace(trace, tc.target, tc.shouldFind);
             } catch (e) {
                 failed++;
                 console.log(`  ${RED}✗ Exception: ${e.message}${RESET}`);

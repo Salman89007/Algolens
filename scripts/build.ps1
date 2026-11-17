@@ -30,7 +30,12 @@ $Sources = @(
     "$EngineDir\algorithms\heap_sort.cpp",
     "$EngineDir\algorithms\counting_sort.cpp",
     "$EngineDir\algorithms\radix_sort.cpp",
-    "$EngineDir\algorithms\bucket_sort.cpp"
+    "$EngineDir\algorithms\bucket_sort.cpp",
+    "$EngineDir\algorithms\linear_search.cpp",
+    "$EngineDir\algorithms\binary_search.cpp",
+    "$EngineDir\algorithms\jump_search.cpp",
+    "$EngineDir\algorithms\interpolation_search.cpp",
+    "$EngineDir\algorithms\exponential_search.cpp"
 )
 $IncludeDir = "$EngineDir\include"
 

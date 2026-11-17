@@ -27,6 +27,7 @@ export interface SampleInput {
   label: string;
   description: string;
   input: number[];
+  target?: number;
 }
 
 export interface AlgorithmMeta {
@@ -42,5 +43,6 @@ export interface AlgorithmMeta {
   whenToUse: string[];
   keyHighlights: string[];
   defaultInput: number[];
+  defaultTarget?: number;
   sampleInputs: SampleInput[];
 }

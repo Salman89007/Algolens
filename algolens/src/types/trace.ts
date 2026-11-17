@@ -5,7 +5,8 @@ export type HighlightType =
   | 'pivot'
   | 'current'
   | 'left'
-  | 'right';
+  | 'right'
+  | 'found';
 
 export interface Highlight {
   index: number;

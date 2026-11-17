@@ -47,6 +47,14 @@ export default function Visualizer() {
   }, [searchParams, currentAlgo]);
 
   const [inputArray, setInputArray] = useState<number[]>(getInitialInput);
+  const supportsTarget = currentAlgo.defaultTarget !== undefined;
+  const [target, setTarget] = useState<number>(() => {
+    const targetParam = searchParams.get('target');
+    if (targetParam !== null && targetParam.trim() !== '' && !isNaN(Number(targetParam))) {
+      return Number(targetParam);
+    }
+    return currentAlgo.defaultTarget ?? 0;
+  });
   const [trace, setTrace] = useState<Trace | null>(null);
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -57,11 +65,16 @@ export default function Visualizer() {
 
   // Re-run algorithm trace when algoId or inputArray changes
   const runTrace = useCallback(
-    async (id: string, input: number[]) => {
+    async (id: string, input: number[], targetValue: number) => {
       setLoadingTrace(true);
       setTraceError(null);
       try {
-        const result = await executeAlgorithm(id, input);
+        const meta = getAlgorithmById(id);
+        const payload =
+          meta?.defaultTarget !== undefined
+            ? JSON.stringify({ array: input, target: targetValue })
+            : input;
+        const result = await executeAlgorithm(id, payload);
         setTrace(result);
         setCurrentStepIdx(0);
         setIsPlaying(false);
@@ -77,30 +90,42 @@ export default function Visualizer() {
   // Initial load or when engine is ready
   useEffect(() => {
     if (isReady) {
-      runTrace(currentAlgo.id, inputArray);
+      runTrace(currentAlgo.id, inputArray, target);
     }
-  }, [isReady, currentAlgo.id, inputArray, runTrace]);
+  }, [isReady, currentAlgo.id, inputArray, target, runTrace]);
 
   // Synchronize URL with algorithm and array input
-  const updateUrlParams = (newArray: number[]) => {
-    const paramVal = newArray.join(',');
-    setSearchParams({ data: paramVal });
+  const updateUrlParams = (newArray: number[], newTarget?: number) => {
+    const params: Record<string, string> = { data: newArray.join(',') };
+    if (newTarget !== undefined) {
+      params.target = String(newTarget);
+    }
+    setSearchParams(params);
   };
 
   // Switch algorithm handler
   const handleSelectAlgo = (newId: string) => {
     const targetMeta = getAlgorithmById(newId);
     if (!targetMeta) return;
+    const nextTarget = targetMeta.defaultTarget ?? 0;
     navigate(`/visualize/${newId}`);
     setInputArray(targetMeta.defaultInput);
-    setSearchParams({ data: targetMeta.defaultInput.join(',') });
+    setTarget(nextTarget);
+    updateUrlParams(
+      targetMeta.defaultInput,
+      targetMeta.defaultTarget !== undefined ? nextTarget : undefined
+    );
   };
 
   // Handle custom input submission
-  const handleApplyInput = (newArr: number[]) => {
+  const handleApplyInput = (newArr: number[], newTarget?: number) => {
+    const resolvedTarget = newTarget ?? target;
     setInputArray(newArr);
-    updateUrlParams(newArr);
-    runTrace(currentAlgo.id, newArr);
+    if (newTarget !== undefined) {
+      setTarget(newTarget);
+    }
+    updateUrlParams(newArr, supportsTarget ? resolvedTarget : undefined);
+    runTrace(currentAlgo.id, newArr, resolvedTarget);
   };
 
   // Copy share URL
@@ -258,7 +283,7 @@ export default function Visualizer() {
             <span className="font-medium">{traceError}</span>
           </div>
           <button
-            onClick={() => runTrace(currentAlgo.id, inputArray)}
+            onClick={() => runTrace(currentAlgo.id, inputArray, target)}
             className="px-3 py-1.5 rounded-xl bg-rose-600 text-white hover:bg-rose-700 font-semibold text-xs shadow-xs"
           >
             Retry Trace
@@ -360,6 +385,8 @@ export default function Visualizer() {
             currentInput={inputArray}
             sampleInputs={currentAlgo.sampleInputs}
             onApplyInput={handleApplyInput}
+            supportsTarget={supportsTarget}
+            currentTarget={supportsTarget ? target : undefined}
           />
         </div>
 

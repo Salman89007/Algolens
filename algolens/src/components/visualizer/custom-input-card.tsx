@@ -1,21 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dices, Sparkles, Sliders, AlertCircle } from 'lucide-react';
 import type { SampleInput } from '@/types/algorithm';
 
 interface CustomInputCardProps {
   currentInput: number[];
   sampleInputs: SampleInput[];
-  onApplyInput: (newArray: number[]) => void;
+  onApplyInput: (newArray: number[], target?: number) => void;
+  supportsTarget?: boolean;
+  currentTarget?: number;
 }
 
 export function CustomInputCard({
   currentInput,
   sampleInputs,
   onApplyInput,
+  supportsTarget = false,
+  currentTarget,
 }: CustomInputCardProps) {
   const [inputText, setInputText] = useState(currentInput.join(', '));
+  const [targetText, setTargetText] = useState(
+    currentTarget !== undefined ? String(currentTarget) : ''
+  );
   const [error, setError] = useState<string | null>(null);
   const [randomSize, setRandomSize] = useState(8);
+
+  // Keep the form in sync when the algorithm or preset changes
+  useEffect(() => {
+    setInputText(currentInput.join(', '));
+  }, [currentInput]);
+
+  useEffect(() => {
+    setTargetText(currentTarget !== undefined ? String(currentTarget) : '');
+  }, [currentTarget]);
 
   const handleApply = (text: string) => {
     try {
@@ -48,8 +64,19 @@ export function CustomInputCard({
         parsed.push(num);
       }
 
+      let parsedTarget: number | undefined;
+      if (supportsTarget) {
+        const rawTarget = targetText.trim();
+        const numTarget = Number(rawTarget);
+        if (rawTarget === '' || isNaN(numTarget) || !Number.isInteger(numTarget)) {
+          setError('Please enter an integer target value to search for.');
+          return;
+        }
+        parsedTarget = numTarget;
+      }
+
       setError(null);
-      onApplyInput(parsed);
+      onApplyInput(parsed, parsedTarget);
     } catch {
       setError('Invalid format. Use comma-separated integers (e.g. 5, 3, 1, 4, 2).');
     }
@@ -63,14 +90,18 @@ export function CustomInputCard({
     const formatted = arr.join(', ');
     setInputText(formatted);
     setError(null);
-    onApplyInput(arr);
+    const numTarget = Number(targetText);
+    onApplyInput(arr, supportsTarget && !isNaN(numTarget) ? numTarget : undefined);
   };
 
-  const handlePreset = (presetArr: number[]) => {
-    const formatted = presetArr.join(', ');
+  const handlePreset = (preset: SampleInput) => {
+    const formatted = preset.input.join(', ');
     setInputText(formatted);
+    if (preset.target !== undefined) {
+      setTargetText(String(preset.target));
+    }
     setError(null);
-    onApplyInput(presetArr);
+    onApplyInput(preset.input, preset.target);
   };
 
   return (
@@ -109,6 +140,22 @@ export function CustomInputCard({
           />
         </div>
 
+        {supportsTarget && (
+          <div className="relative">
+            <input
+              type="text"
+              value={targetText}
+              onChange={(e) => {
+                setTargetText(e.target.value);
+                setError(null);
+              }}
+              placeholder="Target value to search for, e.g. 7"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-2.5 text-sm font-mono text-slate-900 placeholder-slate-400 focus:border-slate-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 transition-all shadow-xs"
+              aria-label="Search target value"
+            />
+          </div>
+        )}
+
         {error && (
           <div className="flex items-center gap-1.5 text-xs text-rose-600 font-medium">
             <AlertCircle className="h-4 w-4 shrink-0 text-rose-500" />
@@ -126,7 +173,7 @@ export function CustomInputCard({
               <button
                 type="button"
                 key={preset.label}
-                onClick={() => handlePreset(preset.input)}
+                onClick={() => handlePreset(preset)}
                 className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:text-slate-950 hover:bg-slate-50 hover:border-slate-300 shadow-2xs transition-colors"
                 title={preset.description}
               >
