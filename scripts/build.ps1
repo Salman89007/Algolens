@@ -35,7 +35,12 @@ $Sources = @(
     "$EngineDir\algorithms\binary_search.cpp",
     "$EngineDir\algorithms\jump_search.cpp",
     "$EngineDir\algorithms\interpolation_search.cpp",
-    "$EngineDir\algorithms\exponential_search.cpp"
+    "$EngineDir\algorithms\exponential_search.cpp",
+    "$EngineDir\algorithms\two_pointers.cpp",
+    "$EngineDir\algorithms\sliding_window.cpp",
+    "$EngineDir\algorithms\kadane.cpp",
+    "$EngineDir\algorithms\dutch_flag.cpp",
+    "$EngineDir\algorithms\prefix_sum.cpp"
 )
 $IncludeDir = "$EngineDir\include"
 

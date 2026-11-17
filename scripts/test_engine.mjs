@@ -48,6 +48,14 @@ const SEARCHES = [
     'exponential-search',
 ];
 
+const ARRAY_PATTERNS = [
+    'two-pointers',
+    'sliding-window',
+    'kadane',
+    'dutch-flag',
+    'prefix-sum',
+];
+
 function assert(condition, message) {
     if (condition) {
         passed++;
@@ -149,6 +157,11 @@ function validateSortTrace(trace, inputArr) {
 }
 
 // Search algorithms end with an explicit found / not-found result
+function validateArrayTrace(trace, finalPattern) {
+    const lastStep = trace.steps[trace.steps.length - 1];
+    assert(finalPattern.test(lastStep.explanation), `final step describes the result`);
+}
+
 function validateSearchTrace(trace, target, shouldFind) {
     const lastStep = trace.steps[trace.steps.length - 1];
     const hasFoundHighlight = trace.steps.some(s =>
@@ -190,7 +203,7 @@ async function main() {
     assert(algos.length >= 3, `at least 3 algorithms registered (got ${algos.length})`);
 
     // Every implemented sort and search must be registered
-    for (const id of [...SORTS, ...SEARCHES]) {
+    for (const id of [...SORTS, ...SEARCHES, ...ARRAY_PATTERNS]) {
         assert(algos.includes(id), `registered: ${id}`);
     }
 
@@ -245,6 +258,77 @@ async function main() {
                 );
                 validateCommonTrace(trace, algoId, tc.array);
                 validateSearchTrace(trace, tc.target, tc.shouldFind);
+            } catch (e) {
+                failed++;
+                console.log(`  ${RED}✗ Exception: ${e.message}${RESET}`);
+            }
+        }
+    }
+
+    // Array pattern cases, with a final-result pattern per algorithm
+    const arrayCases = {
+        'two-pointers': {
+            pattern: /pair/i,
+            cases: [
+                { name: 'pair present', input: { array: [2, 3, 4, 6, 8, 11], target: 10 } },
+                { name: 'pair at ends', input: { array: [1, 2, 3, 4, 5], target: 6 } },
+                { name: 'no pair', input: { array: [1, 2, 3, 9], target: 20 } },
+                { name: 'single element', input: { array: [5], target: 10 } },
+                { name: 'duplicates', input: { array: [1, 1, 2, 3, 4], target: 2 } },
+            ],
+        },
+        'sliding-window': {
+            pattern: /window/i,
+            cases: [
+                { name: 'k=3', input: { array: [2, 1, 5, 1, 3, 2], target: 3 } },
+                { name: 'k=1', input: { array: [4, 2, 9, 1], target: 1 } },
+                { name: 'k=n', input: { array: [1, 2, 3], target: 3 } },
+                { name: 'k too large', input: { array: [1, 2], target: 5 } },
+                { name: 'negatives', input: { array: [-1, 2, 3, -4, 5], target: 2 } },
+            ],
+        },
+        'kadane': {
+            pattern: /maximum subarray/i,
+            cases: [
+                { name: 'mixed', input: [-2, 1, -3, 4, -1, 2, 1, -5, 4] },
+                { name: 'all negative', input: [-5, -2, -8] },
+                { name: 'all positive', input: [1, 2, 3, 4] },
+                { name: 'single', input: [7] },
+            ],
+        },
+        'dutch-flag': {
+            pattern: /partition/i,
+            cases: [
+                { name: 'classic', input: { array: [2, 0, 2, 1, 1, 0], target: 1 } },
+                { name: 'pivot absent', input: { array: [3, 1, 2], target: 5 } },
+                { name: 'all equal', input: { array: [2, 2, 2], target: 2 } },
+                { name: 'single', input: { array: [1], target: 1 } },
+                { name: 'duplicates', input: { array: [0, 1, 1, 2, 1, 0], target: 1 } },
+            ],
+        },
+        'prefix-sum': {
+            pattern: /prefix/i,
+            cases: [
+                { name: 'k=4', input: { array: [3, 1, 4, 1, 5, 9, 2, 6], target: 4 } },
+                { name: 'k=0', input: { array: [3, 1, 4], target: 0 } },
+                { name: 'k=n', input: { array: [3, 1, 4], target: 3 } },
+                { name: 'k too large', input: { array: [1, 2], target: 9 } },
+                { name: 'negatives', input: { array: [-2, 5, -1], target: 2 } },
+            ],
+        },
+    };
+
+    for (const algoId of ARRAY_PATTERNS) {
+        const config = arrayCases[algoId];
+        console.log(`\n${BOLD}Testing: ${YELLOW}${algoId}${RESET}`);
+
+        for (const tc of config.cases) {
+            const inputArr = Array.isArray(tc.input) ? tc.input : tc.input.array;
+            console.log(`\n  ${CYAN}Input (${tc.name}):${RESET} [${inputArr.join(', ')}]`);
+            try {
+                const trace = runAlgorithm(Module, algoId, tc.input);
+                validateCommonTrace(trace, algoId, inputArr);
+                validateArrayTrace(trace, config.pattern);
             } catch (e) {
                 failed++;
                 console.log(`  ${RED}✗ Exception: ${e.message}${RESET}`);

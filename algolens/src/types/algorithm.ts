@@ -44,5 +44,6 @@ export interface AlgorithmMeta {
   keyHighlights: string[];
   defaultInput: number[];
   defaultTarget?: number;
+  paramLabel?: string;
   sampleInputs: SampleInput[];
 }

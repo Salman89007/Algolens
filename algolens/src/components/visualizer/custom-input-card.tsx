@@ -8,6 +8,7 @@ interface CustomInputCardProps {
   onApplyInput: (newArray: number[], target?: number) => void;
   supportsTarget?: boolean;
   currentTarget?: number;
+  targetLabel?: string;
 }
 
 export function CustomInputCard({
@@ -16,6 +17,7 @@ export function CustomInputCard({
   onApplyInput,
   supportsTarget = false,
   currentTarget,
+  targetLabel,
 }: CustomInputCardProps) {
   const [inputText, setInputText] = useState(currentInput.join(', '));
   const [targetText, setTargetText] = useState(
@@ -149,9 +151,9 @@ export function CustomInputCard({
                 setTargetText(e.target.value);
                 setError(null);
               }}
-              placeholder="Target value to search for, e.g. 7"
+              placeholder={targetLabel ?? 'Target value to search for, e.g. 7'}
               className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-2.5 text-sm font-mono text-slate-900 placeholder-slate-400 focus:border-slate-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 transition-all shadow-xs"
-              aria-label="Search target value"
+              aria-label={targetLabel ?? 'Search target value'}
             />
           </div>
         )}

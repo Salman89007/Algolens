@@ -57,6 +57,7 @@ export default function Visualizer() {
   });
   const [trace, setTrace] = useState<Trace | null>(null);
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
+  const tabsRef = useRef<HTMLDivElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [speedMs, setSpeedMs] = useState(300);
   const [loadingTrace, setLoadingTrace] = useState(false);
@@ -102,6 +103,45 @@ export default function Visualizer() {
     }
     setSearchParams(params);
   };
+
+  // Keep the active algorithm tab visible inside the horizontally scrolling strip
+  useEffect(() => {
+    const strip = tabsRef.current;
+    if (!strip) return;
+
+    const ensureActiveTabVisible = () => {
+      const activeTab = strip.querySelector<HTMLButtonElement>('[data-active="true"]');
+      if (!activeTab) return;
+
+      const stripRect = strip.getBoundingClientRect();
+      const tabRect = activeTab.getBoundingClientRect();
+
+      // Instant scrolling keeps the strip usable even when smooth scrolling
+      // is disabled by the browser or the user's motion preferences.
+      if (tabRect.left < stripRect.left) {
+        strip.scrollLeft -= stripRect.left - tabRect.left + 8;
+      } else if (tabRect.right > stripRect.right) {
+        strip.scrollLeft += tabRect.right - stripRect.right + 8;
+      }
+    };
+
+    ensureActiveTabVisible();
+
+    // Webfonts and responsive layout change tab widths after first paint,
+    // so keep the active tab visible when the strip or tab resizes.
+    const observer = new ResizeObserver(ensureActiveTabVisible);
+    observer.observe(strip);
+    const activeTab = strip.querySelector<HTMLButtonElement>('[data-active="true"]');
+    if (activeTab) observer.observe(activeTab);
+
+    document.fonts?.ready.then(ensureActiveTabVisible).catch(() => undefined);
+    window.addEventListener('resize', ensureActiveTabVisible);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', ensureActiveTabVisible);
+    };
+  }, [currentAlgo.id]);
 
   // Switch algorithm handler
   const handleSelectAlgo = (newId: string) => {
@@ -237,12 +277,16 @@ export default function Visualizer() {
         {/* Algorithm Switcher Tabs & Share Link */}
         <div className="flex w-full min-w-0 flex-wrap items-center gap-2.5 md:w-auto md:max-w-[60%] md:justify-end">
           {/* Algorithm selector tabs: stay on one row and scroll horizontally when they overflow */}
-          <div className="flex min-w-0 max-w-full items-center overflow-x-auto rounded-xl border border-slate-200/80 bg-slate-100/80 p-1">
+          <div
+            ref={tabsRef}
+            className="flex min-w-0 max-w-full items-center overflow-x-auto rounded-xl border border-slate-200/80 bg-slate-100/80 p-1"
+          >
             {ALGORITHMS.map((algo) => {
               const active = algo.id === currentAlgo.id;
               return (
                 <button
                   key={algo.id}
+                  data-active={active}
                   onClick={() => handleSelectAlgo(algo.id)}
                   className={`shrink-0 whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
                     active
@@ -389,6 +433,7 @@ export default function Visualizer() {
             onApplyInput={handleApplyInput}
             supportsTarget={supportsTarget}
             currentTarget={supportsTarget ? target : undefined}
+            targetLabel={currentAlgo.paramLabel}
           />
         </div>
 
