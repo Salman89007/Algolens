@@ -344,10 +344,238 @@ export const ALGORITHMS: AlgorithmMeta[] = [
       },
     ],
   },
+  {
+    id: 'heap-sort',
+    name: 'Heap Sort',
+    category: 'sorting',
+    categoryLabel: 'Sorting',
+    phase: 2,
+    isImplemented: true,
+    shortDescription: 'Builds a max-heap, then repeatedly swaps the root to the end and sifts the new root down.',
+    description:
+      'Heap Sort treats the array as a complete binary tree stored in level order. It first builds a max-heap so every parent is at least as large as its children, then repeatedly swaps the root (the maximum) with the last heap element, shrinks the heap by one, and sifts the new root down. The sorted region grows from the back of the array.',
+    complexity: {
+      best: 'O(n log n)',
+      average: 'O(n log n)',
+      worst: 'O(n log n)',
+      space: 'O(1)',
+      stable: false,
+      inPlace: true,
+    },
+    whenToUse: [
+      'Guaranteed O(n log n) sorting with no auxiliary array and no recursion depth surprises.',
+      'Real-time systems that need a predictable worst-case bound, unlike quick sort.',
+      'Selecting the k largest elements with a heap instead of fully sorting.',
+    ],
+    keyHighlights: [
+      'Bottom-up heap construction in O(n)',
+      'Root-to-leaf sift-down after every extraction',
+      'Sorted suffix grows from the end of the array',
+    ],
+    defaultInput: [12, 11, 13, 5, 6, 7],
+    sampleInputs: [
+      {
+        label: 'Mixed Values',
+        description: 'Standard array showing heap build and extractions',
+        input: [12, 11, 13, 5, 6, 7],
+      },
+      {
+        label: 'Already Sorted',
+        description: 'Heap build then extraction on ascending data',
+        input: [1, 2, 3, 4, 5],
+      },
+      {
+        label: 'Reverse Sorted',
+        description: 'Descending input that is already a max-heap',
+        input: [9, 7, 5, 3, 1],
+      },
+      {
+        label: 'With Duplicates',
+        description: 'Repeated values in the heap',
+        input: [5, 2, 8, 2, 9, 1],
+      },
+      {
+        label: 'Small Array',
+        description: '5-element array for clean debugging',
+        input: [5, 3, 1, 4, 2],
+      },
+    ],
+  },
+  {
+    id: 'counting-sort',
+    name: 'Counting Sort',
+    category: 'sorting',
+    categoryLabel: 'Sorting',
+    phase: 2,
+    isImplemented: true,
+    shortDescription: 'Counts occurrences of each value, prefix-sums the counts, and places values directly into output slots.',
+    description:
+      'Counting Sort is a non-comparison sort for integer keys with a limited range. It counts how often each value appears, turns those counts into prefix sums so every value knows its final position, then writes the values into an output array from right to left. Because it never compares two elements, it runs in linear time when the value range is small.',
+    complexity: {
+      best: 'O(n + k)',
+      average: 'O(n + k)',
+      worst: 'O(n + k)',
+      space: 'O(n + k)',
+      stable: true,
+      inPlace: false,
+    },
+    whenToUse: [
+      'Integer data with a small, known range (ages, grades, bytes, test scores).',
+      'As the per-digit subroutine inside radix sort.',
+      'When linear time matters more than the extra output and count arrays.',
+    ],
+    keyHighlights: [
+      'No comparisons between elements at all',
+      'Prefix sums map each value straight to its output slot',
+      'Right-to-left placement keeps equal values in their original order',
+    ],
+    defaultInput: [4, 2, 2, 8, 3, 3, 1],
+    sampleInputs: [
+      {
+        label: 'Small Range',
+        description: 'Classic example with several duplicates',
+        input: [4, 2, 2, 8, 3, 3, 1],
+      },
+      {
+        label: 'Already Sorted',
+        description: 'Counts and prefix sums with no reordering needed',
+        input: [1, 2, 3, 4, 5],
+      },
+      {
+        label: 'Reverse Sorted',
+        description: 'Placement reverses the descending input',
+        input: [5, 4, 3, 2, 1],
+      },
+      {
+        label: 'All Equal',
+        description: 'Every element lands in the same bucket',
+        input: [7, 7, 7, 7, 7],
+      },
+      {
+        label: 'Small Array',
+        description: '5-element array for clean debugging',
+        input: [5, 3, 1, 4, 2],
+      },
+    ],
+  },
+  {
+    id: 'radix-sort',
+    name: 'Radix Sort',
+    category: 'sorting',
+    categoryLabel: 'Sorting',
+    phase: 2,
+    isImplemented: true,
+    shortDescription: 'Sorts digit by digit from least significant to most significant using stable bucket passes.',
+    description:
+      'Radix Sort (LSD) sorts integers without comparing them. Starting at the 1s digit, it performs a stable counting-sort pass on that digit, then moves to the 10s digit, the 100s digit, and so on. Each stable pass preserves the ordering produced by the previous digit, so after the most significant digit the array is fully sorted.',
+    complexity: {
+      best: 'O(nk)',
+      average: 'O(nk)',
+      worst: 'O(nk)',
+      space: 'O(n + k)',
+      stable: true,
+      inPlace: false,
+    },
+    whenToUse: [
+      'Large collections of fixed-width integers such as IDs, ZIP codes, or timestamps.',
+      'When a linear-ish pass count beats comparison sorting on big inputs.',
+      'Digit-wise processing where stability per pass is essential.',
+    ],
+    keyHighlights: [
+      'Least-significant-digit passes with stable placement',
+      'No element-to-element comparisons',
+      'Negative values handled by shifting the whole array first',
+    ],
+    defaultInput: [170, 45, 75, 90, 802, 24, 2, 66],
+    sampleInputs: [
+      {
+        label: 'Classic Example',
+        description: 'Mixed digit lengths across three passes',
+        input: [170, 45, 75, 90, 802, 24, 2, 66],
+      },
+      {
+        label: 'Single Digit',
+        description: 'One pass is enough to sort these values',
+        input: [4, 2, 9, 1, 7],
+      },
+      {
+        label: 'Reverse Sorted',
+        description: 'Two-digit values in descending order',
+        input: [99, 88, 77, 66, 55],
+      },
+      {
+        label: 'With Duplicates',
+        description: 'Repeated values across digit buckets',
+        input: [21, 12, 21, 12, 33],
+      },
+      {
+        label: 'Small Array',
+        description: '5-element array for clean debugging',
+        input: [5, 3, 1, 4, 2],
+      },
+    ],
+  },
+  {
+    id: 'bucket-sort',
+    name: 'Bucket Sort',
+    category: 'sorting',
+    categoryLabel: 'Sorting',
+    phase: 2,
+    isImplemented: true,
+    shortDescription: 'Scatters values into buckets by range, sorts each bucket, then concatenates them in order.',
+    description:
+      'Bucket Sort distributes the input across a fixed number of buckets by mapping each value into a bucket index, sorts every bucket independently (here with insertion-style bucket sorting), and then concatenates the buckets from lowest to highest. It is fast when values are spread evenly, because each bucket stays small.',
+    complexity: {
+      best: 'O(n + k)',
+      average: 'O(n + k)',
+      worst: 'O(n²)',
+      space: 'O(n + k)',
+      stable: true,
+      inPlace: false,
+    },
+    whenToUse: [
+      'Floating-point or integer data spread roughly uniformly over a range.',
+      'External or parallel settings where each bucket can be sorted independently.',
+      'When a simple linear-time average case is acceptable and clustering is unlikely.',
+    ],
+    keyHighlights: [
+      'Bucket index derived from the value range, not comparisons',
+      'Each bucket sorted independently, then concatenated',
+      'Performance degrades to O(n²) when values cluster in one bucket',
+    ],
+    defaultInput: [29, 25, 3, 49, 9, 37, 21, 43],
+    sampleInputs: [
+      {
+        label: 'Even Spread',
+        description: 'Values distributed across several buckets',
+        input: [29, 25, 3, 49, 9, 37, 21, 43],
+      },
+      {
+        label: 'Already Sorted',
+        description: 'Buckets fill in order and concatenate unchanged',
+        input: [1, 2, 3, 4, 5],
+      },
+      {
+        label: 'Clustered',
+        description: 'Most values land in the same bucket',
+        input: [8, 9, 10, 11, 12, 90],
+      },
+      {
+        label: 'Reverse Sorted',
+        description: 'Descending values spread across buckets',
+        input: [49, 37, 29, 25, 21, 9, 3],
+      },
+      {
+        label: 'Small Array',
+        description: '5-element array for clean debugging',
+        input: [5, 3, 1, 4, 2],
+      },
+    ],
+  },
 ];
 
 export const ALL_CATEGORIES = [
-  { id: 'sorting', name: 'Sorting', count: 10, implemented: 6, icon: 'ArrowUpDown' },
+  { id: 'sorting', name: 'Sorting', count: 10, implemented: 10, icon: 'ArrowUpDown' },
   { id: 'searching', name: 'Searching', count: 5, implemented: 0, icon: 'Search' },
   { id: 'arrays', name: 'Array Patterns', count: 5, implemented: 0, icon: 'Grid' },
   { id: 'linked-lists', name: 'Linked Lists', count: 4, implemented: 0, icon: 'GitCommit' },
