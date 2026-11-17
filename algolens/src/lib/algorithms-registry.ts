@@ -1087,7 +1087,7 @@ export const ALGORITHMS: AlgorithmMeta[] = [
       average: 'O(n)',
       worst: 'O(n)',
       space: 'O(1)',
-      stable: true,
+      stable: false,
       inPlace: true,
     },
     whenToUse: [
