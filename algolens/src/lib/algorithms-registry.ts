@@ -230,10 +230,67 @@ export const ALGORITHMS: AlgorithmMeta[] = [
       },
     ],
   },
+  {
+    id: 'selection-sort',
+    name: 'Selection Sort',
+    category: 'sorting',
+    categoryLabel: 'Sorting',
+    phase: 2,
+    isImplemented: true,
+    shortDescription: 'Repeatedly selects the smallest remaining element and swaps it into the next sorted position.',
+    description:
+      'Selection Sort divides the array into a sorted prefix and an unsorted suffix. On every pass it scans the unsorted suffix for the smallest element, then swaps that element into the first unsorted slot. Because it only performs one swap per pass, it is useful when writes are expensive, though it always takes quadratic time regardless of input order.',
+    complexity: {
+      best: 'O(n²)',
+      average: 'O(n²)',
+      worst: 'O(n²)',
+      space: 'O(1)',
+      stable: false,
+      inPlace: true,
+    },
+    whenToUse: [
+      'When write/swap operations are costly and memory is limited (at most n - 1 swaps).',
+      'Small datasets where simplicity matters more than asymptotic performance.',
+      'Teaching the idea of growing a sorted prefix by repeatedly picking the minimum.',
+    ],
+    keyHighlights: [
+      'Exactly one swap per pass, at most n - 1 swaps total',
+      'Always O(n²) comparisons: no best-case shortcut',
+      'Not stable, since the swap can move equal elements past each other',
+    ],
+    defaultInput: [64, 25, 12, 22, 11],
+    sampleInputs: [
+      {
+        label: 'Textbook Example',
+        description: 'Standard mixed array for step-by-step minimum selection',
+        input: [64, 25, 12, 22, 11],
+      },
+      {
+        label: 'Already Sorted',
+        description: 'Each pass finds the minimum already in place and skips the swap',
+        input: [1, 2, 3, 4, 5],
+      },
+      {
+        label: 'Reverse Sorted',
+        description: 'Every pass needs a swap from the far end',
+        input: [9, 7, 5, 3, 1],
+      },
+      {
+        label: 'With Duplicates',
+        description: 'Showing why selection sort is not stable',
+        input: [5, 2, 8, 2, 9, 1],
+      },
+      {
+        label: 'Small Array',
+        description: '5-element array for clean debugging',
+        input: [5, 3, 1, 4, 2],
+      },
+    ],
+  },
 ];
 
 export const ALL_CATEGORIES = [
-  { id: 'sorting', name: 'Sorting', count: 10, implemented: 4, icon: 'ArrowUpDown' },
+  { id: 'sorting', name: 'Sorting', count: 10, implemented: 5, icon: 'ArrowUpDown' },
   { id: 'searching', name: 'Searching', count: 5, implemented: 0, icon: 'Search' },
   { id: 'arrays', name: 'Array Patterns', count: 5, implemented: 0, icon: 'Grid' },
   { id: 'linked-lists', name: 'Linked Lists', count: 4, implemented: 0, icon: 'GitCommit' },

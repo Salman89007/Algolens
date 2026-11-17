@@ -141,6 +141,11 @@ async function main() {
     console.log(`${CYAN}Registered algorithms:${RESET} ${algos.join(', ')}\n`);
     assert(algos.length >= 3, `at least 3 algorithms registered (got ${algos.length})`);
 
+    // Every implemented sort must be registered
+    for (const sortId of ['bubble-sort', 'merge-sort', 'quick-sort', 'insertion-sort', 'selection-sort']) {
+        assert(algos.includes(sortId), `registered: ${sortId}`);
+    }
+
     // Test inputs
     const testCases = [
         { name: 'normal', input: [5, 3, 1, 4, 2] },
