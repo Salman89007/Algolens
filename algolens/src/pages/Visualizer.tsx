@@ -108,13 +108,15 @@ export default function Visualizer() {
     const targetMeta = getAlgorithmById(newId);
     if (!targetMeta) return;
     const nextTarget = targetMeta.defaultTarget ?? 0;
-    navigate(`/visualize/${newId}`);
+    const params = new URLSearchParams({ data: targetMeta.defaultInput.join(',') });
+    if (targetMeta.defaultTarget !== undefined) {
+      params.set('target', String(nextTarget));
+    }
     setInputArray(targetMeta.defaultInput);
     setTarget(nextTarget);
-    updateUrlParams(
-      targetMeta.defaultInput,
-      targetMeta.defaultTarget !== undefined ? nextTarget : undefined
-    );
+    // One navigation keeps the new path and its query string together;
+    // a separate setSearchParams would resolve against the old path.
+    navigate(`/visualize/${newId}?${params.toString()}`);
   };
 
   // Handle custom input submission
@@ -233,16 +235,16 @@ export default function Visualizer() {
         </div>
 
         {/* Algorithm Switcher Tabs & Share Link */}
-        <div className="flex flex-wrap items-center gap-2.5">
-          {/* Sorting algorithm selector tabs */}
-          <div className="flex items-center rounded-xl border border-slate-200/80 bg-slate-100/80 p-1">
+        <div className="flex w-full min-w-0 flex-wrap items-center gap-2.5 md:w-auto md:max-w-[60%] md:justify-end">
+          {/* Algorithm selector tabs: stay on one row and scroll horizontally when they overflow */}
+          <div className="flex min-w-0 max-w-full items-center overflow-x-auto rounded-xl border border-slate-200/80 bg-slate-100/80 p-1">
             {ALGORITHMS.map((algo) => {
               const active = algo.id === currentAlgo.id;
               return (
                 <button
                   key={algo.id}
                   onClick={() => handleSelectAlgo(algo.id)}
-                  className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                  className={`shrink-0 whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
                     active
                       ? 'bg-slate-950 text-white shadow-xs'
                       : 'text-slate-600 hover:text-slate-950 hover:bg-white/60'
@@ -257,7 +259,7 @@ export default function Visualizer() {
           {/* Share Button */}
           <button
             onClick={handleShareLink}
-            className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 hover:text-slate-950 hover:bg-slate-50 shadow-2xs transition-colors"
+            className="flex shrink-0 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 hover:text-slate-950 hover:bg-slate-50 shadow-2xs transition-colors"
             title="Copy shareable link with current array"
           >
             {copiedShare ? (
